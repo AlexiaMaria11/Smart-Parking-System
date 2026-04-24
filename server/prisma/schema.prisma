@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+enum ReservationStatus {
+  ACTIVE
+  UPCOMING
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum HardwareType {
+  SENSOR
+  BARRIER
+  CAMERA
+}
+
+enum HardwareStatus {
+  ONLINE
+  OFFLINE
+  MAINTENANCE
+  ERROR
+}
+
+enum ParkingEventType {
+  ENTRY
+  EXIT
+  RESERVATION_CREATED
+  RESERVATION_CANCELLED
+  CONFLICT
+  NO_SHOW
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  phone          String?
+  passwordHash   String
+  role           Role            @default(CLIENT)
+  vehicles       Vehicle[]
+  reservations   Reservation[]
+  payments       Payment[]
+  notifications  Notification[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Vehicle {
+  id            String          @id @default(cuid())
+  label         String
+  licensePlate  String          @unique
+  isDefault     Boolean         @default(false)
+  owner         User            @relation(fields: [ownerId], references: [id])
+  ownerId       String
+  reservations  Reservation[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ParkingSpot {
+  id            String          @id @default(cuid())
+  code          String          @unique
+  level         String?
+  zone          String?
+  isAvailable   Boolean         @default(true)
+  isDefective   Boolean         @default(false)
+  pricePerHour  Decimal         @db.Decimal(10, 2)
+  reservations  Reservation[]
+  events        ParkingEvent[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Reservation {
+  id            String             @id @default(cuid())
+  user          User               @relation(fields: [userId], references: [id])
+  userId        String
+  vehicle       Vehicle            @relation(fields: [vehicleId], references: [id])
+  vehicleId     String
+  parkingSpot   ParkingSpot        @relation(fields: [parkingSpotId], references: [id])
+  parkingSpotId String
+  status        ReservationStatus  @default(UPCOMING)
+  startTime     DateTime
+  endTime       DateTime
+  totalCost     Decimal            @db.Decimal(10, 2)
+  payments      Payment[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model Payment {
+  id            String         @id @default(cuid())
+  reservation   Reservation    @relation(fields: [reservationId], references: [id])
+  reservationId String
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String
+  amount        Decimal        @db.Decimal(10, 2)
+  status        PaymentStatus  @default(PENDING)
+  provider      String?
+  createdAt     DateTime       @default(now())
+}
+
+model HardwareDevice {
+  id            String          @id @default(cuid())
+  name          String
+  type          HardwareType
+  status        HardwareStatus  @default(ONLINE)
+  location      String?
+  uptime        Float           @default(100)
+  errorHistory  Json?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ParkingEvent {
+  id            String            @id @default(cuid())
+  type          ParkingEventType
+  description   String
+  licensePlate  String?
+  parkingSpot   ParkingSpot?      @relation(fields: [parkingSpotId], references: [id])
+  parkingSpotId String?
+  createdAt     DateTime          @default(now())
+}
+
+model Notification {
+  id            String          @id @default(cuid())
+  title         String
+  message       String
+  isRead        Boolean         @default(false)
+  user          User            @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime        @default(now())
+}
