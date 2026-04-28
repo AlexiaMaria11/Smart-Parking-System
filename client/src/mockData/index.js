@@ -1,20 +1,20 @@
-import { Bell, CarFront, CircleDollarSign, Cpu, ShieldCheck, TimerReset } from "lucide-react";
+import { Bell, CalendarCheck, CarFront, CircleDollarSign, TimerReset, Users } from "lucide-react";
 
 export const landingFeatures = [
   {
-    title: "Live parking intelligence",
-    description: "Watch spot availability update in real time with sensor-ready architecture and Socket.IO events.",
+    title: "Real-time visibility",
+    description: "See every parking spot update live - no refreshing, no guessing. Green means go.",
     icon: Bell
   },
   {
-    title: "Fast reservation flow",
-    description: "Reserve, extend, cancel, and rebook spots from a clean dashboard optimized for students and staff.",
-    icon: CarFront
+    title: "Reserve in seconds",
+    description: "Pick your spot, confirm your booking, and get a QR code sent instantly to your phone.",
+    icon: CalendarCheck
   },
   {
-    title: "Admin control center",
-    description: "Monitor occupancy, hardware health, conflicts, and daily revenue from one modular workspace.",
-    icon: ShieldCheck
+    title: "Built for everyone",
+    description: "Designed for drivers, staff and administrators - with role-based access and admin dashboards included.",
+    icon: Users
   }
 ];
 

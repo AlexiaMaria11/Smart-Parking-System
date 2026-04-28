@@ -1,6 +1,12 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Sparkles, Waves } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  MapPinned,
+  QrCode,
+  Sparkles,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import parkingHero from "../../assets/parking-hero.png";
 import { Navbar } from "../../components/layout/Navbar";
@@ -16,22 +22,26 @@ export function LandingPage() {
   const stats = useLiveParkingStats(liveStats);
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  const heroFilter = useTransform(scrollYProgress, [0, 1], ["blur(0px)", "blur(10px)"]);
-  const heroImageY = useTransform(scrollYProgress, [0, 1], ["0px", "-140px"]);
+  const heroFilter = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["blur(0px)", "blur(10px)"],
+  );
+  const heroY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, -150], // se duce în sus
+  );
 
   return (
     <div>
       <Navbar />
-      <motion.section
-        ref={heroRef}
-        className="landing-hero"
-        style={{ filter: heroFilter }}
-      >
+      <motion.section ref={heroRef} className="landing-hero">
         <motion.div
           className="landing-hero-media"
-          style={{ y: heroImageY }}
+          style={{ filter: heroFilter }}
           aria-hidden="true"
         >
           <div className="landing-hero-media-shell">
@@ -40,27 +50,23 @@ export function LandingPage() {
         </motion.div>
         <div className="landing-hero-overlay" />
         <div className="landing-hero-content">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="landing-hero-copy"
-          >
+          <motion.div style={{ y: heroY }} className="landing-hero-copy">
             <div className="landing-eyebrow">
               <Sparkles size={16} />
-              Smart university parking orchestration
+              Smart parking — powered by real-time data
             </div>
             <h1 className="landing-title">
-              Find, reserve and manage campus parking with confidence.
+              Find, reserve and manage parking — without the hassle.
             </h1>
             <p className="landing-description">
-              A modern smart parking system for students, staff and
-              administrators, designed around real-time spot visibility, clean
-              dashboards and hardware-ready workflows.
+              A modern smart parking system for drivers, staff and
+              administrators. See live spot availability, reserve your space in
+              seconds, and let the system handle the rest.
             </p>
             <div className="landing-actions">
               <Link to="/register">
                 <Button className="gap-2">
-                  Find Parking Spots
+                  Find a Spot
                   <ArrowRight size={16} />
                 </Button>
               </Link>
@@ -72,12 +78,12 @@ export function LandingPage() {
               <StatCard
                 label="Live available spots"
                 value={stats.availableSpots}
-                trend="Updated via Socket.IO"
+                trend="Updated just now"
               />
               <StatCard
                 label="Occupied spots"
                 value={stats.occupiedSpots}
-                trend="Real-time parking flow"
+                trend="Real-time - refreshes automatically"
               />
             </div>
           </motion.div>
@@ -89,8 +95,8 @@ export function LandingPage() {
         <div className="app-shell">
           <SectionHeading
             eyebrow="Features"
-            title="A polished starter aligned with your Figma direction"
-            description="Soft pink surfaces, rounded panels, clean card spacing and dashboard-focused modules mirror the UI style from your existing design."
+            title="Everything you need for smarter parking"
+            description="Live availability, quick reservations and role-based tools keep the whole parking flow clear from arrival to admin reporting."
             align="center"
           />
           <div className="landing-feature-grid">
@@ -110,30 +116,68 @@ export function LandingPage() {
       </section>
 
       <section id="how-it-works" className="landing-how">
-        <div className="landing-how-grid">
-          <div className="landing-card">
-            <Waves className="text-primary" />
-            <h3 className="landing-card-title">Role-based experience</h3>
-            <p className="landing-card-description">
-              Admins get operational visibility while clients get a smooth
-              reservation journey and saved vehicles.
-            </p>
+        <div className="app-shell">
+          <SectionHeading
+            eyebrow="How it works"
+            title="Find, reserve, park"
+            description="A simple flow for drivers, backed by real-time data and clean access control."
+            align="center"
+          />
+          <div className="landing-how-grid">
+            <div className="landing-card">
+              <div className="landing-step-icon">
+                <MapPinned size={20} />
+              </div>
+              <p className="landing-step-label">Step 1 - Find</p>
+              <h3 className="landing-card-title">Open the live map</h3>
+              <p className="landing-card-description">
+                See which spots are available right now, updated in real time.
+              </p>
+            </div>
+            <div className="landing-card">
+              <div className="landing-step-icon">
+                <CheckCircle2 size={20} />
+              </div>
+              <p className="landing-step-label">Step 2 - Reserve</p>
+              <h3 className="landing-card-title">Confirm your booking</h3>
+              <p className="landing-card-description">
+                Select your spot, choose your time window, and confirm your
+                reservation instantly.
+              </p>
+            </div>
+            <div className="landing-card">
+              <div className="landing-step-icon">
+                <QrCode size={20} />
+              </div>
+              <p className="landing-step-label">Step 3 - Park</p>
+              <h3 className="landing-card-title">Show your QR code</h3>
+              <p className="landing-card-description">
+                Head to your spot. Show your QR code at the entrance and you're
+                good to go.
+              </p>
+            </div>
           </div>
-          <div className="landing-card">
-            <Waves className="text-primary" />
-            <h3 className="landing-card-title">Hardware-ready backend</h3>
-            <p className="landing-card-description">
-              Sensors, cameras and barriers already have dedicated modules,
-              services and report flows.
-            </p>
-          </div>
-          <div className="landing-card">
-            <Waves className="text-primary" />
-            <h3 className="landing-card-title">AI/OCR placeholder</h3>
-            <p className="landing-card-description">
-              The Python service includes the expected capture, detect and OCR
-              stages for license plate recognition.
-            </p>
+        </div>
+      </section>
+
+      <section className="landing-footer-cta">
+        <div className="app-shell">
+          <div className="landing-footer-cta-inner">
+            <div>
+              <h2 className="landing-footer-title">
+                Ready to stop searching for a parking spot?
+              </h2>
+              <p className="landing-footer-description">
+                Join hundreds of drivers and administrators already using Park
+                Smart System.
+              </p>
+            </div>
+            <Link to="/register">
+              <Button className="gap-2">
+                Create your free account
+                <ArrowRight size={16} />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

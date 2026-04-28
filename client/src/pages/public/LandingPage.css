@@ -14,7 +14,7 @@
 .landing-hero-image {
   @apply absolute max-h-[540px] max-w-none object-contain object-bottom opacity-100;
   bottom: 14%;
-  left: 38%;
+  left: 54%;
   height: 62%;
   width: 135%;
 }
@@ -98,7 +98,31 @@
 }
 
 .landing-how-grid {
-  @apply mx-auto grid w-full max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-3 lg:px-8;
+  @apply mt-10 grid gap-6 lg:grid-cols-3;
+}
+
+.landing-step-icon {
+  @apply flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-soft;
+}
+
+.landing-step-label {
+  @apply mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-primary;
+}
+
+.landing-footer-cta {
+  @apply pb-16;
+}
+
+.landing-footer-cta-inner {
+  @apply flex flex-col items-start justify-between gap-8 rounded-[28px] bg-ink p-8 text-white shadow-soft sm:p-10 lg:flex-row lg:items-center;
+}
+
+.landing-footer-title {
+  @apply font-display text-3xl font-semibold leading-tight sm:text-4xl;
+}
+
+.landing-footer-description {
+  @apply mt-4 max-w-2xl text-base leading-7 text-white/75;
 }
 
 @media (min-width: 640px) {
@@ -113,7 +137,7 @@
 @media (min-width: 1024px) {
   .landing-hero-image {
     bottom: 20%;
-    left: 49%;
+    left: 60%;
     height: 86%;
     width: 60%;
   }
@@ -122,13 +146,13 @@
 @media (min-width: 1280px) {
   .landing-hero-image {
     bottom: 18%;
-    left: 45%;
+    left: 57%;
     width: 64%;
   }
 }
 
 @media (min-width: 1536px) {
   .landing-hero-image {
-    left: 42%;
+    left: 54%;
   }
 }
