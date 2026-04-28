@@ -4,6 +4,7 @@ import { AuthShell } from "../../components/layout/AuthShell";
 import { Button } from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTE_PATHS } from "../../constants/routes";
+import "./AuthPages.css";
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -22,27 +23,27 @@ export function RegisterPage() {
 
   return (
     <AuthShell title="Get Started Now" subtitle="Create an account and choose the role flow you want to preview in this starter project.">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block text-sm font-medium">
+      <form onSubmit={handleSubmit} className="auth-form">
+        <label className="auth-label">
           Name
           <input
-            className="mt-2 w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:border-primary"
+            className="auth-field"
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
           />
         </label>
-        <label className="block text-sm font-medium">
+        <label className="auth-label">
           Email address
           <input
-            className="mt-2 w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:border-primary"
+            className="auth-field"
             value={form.email}
             onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
           />
         </label>
-        <label className="block text-sm font-medium">
+        <label className="auth-label">
           Role
           <select
-            className="mt-2 w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:border-primary"
+            className="auth-field"
             value={form.role}
             onChange={(event) => setForm((current) => ({ ...current, role: event.target.value }))}
           >
@@ -50,11 +51,11 @@ export function RegisterPage() {
             <option value="ADMIN">Admin</option>
           </select>
         </label>
-        <Button className="w-full">Sign Up</Button>
+        <Button className="auth-submit">Sign Up</Button>
       </form>
-      <p className="mt-6 text-sm text-muted">
+      <p className="auth-switch">
         Already have an account?{" "}
-        <Link to={ROUTE_PATHS.LOGIN} className="font-semibold text-primary">
+        <Link to={ROUTE_PATHS.LOGIN} className="auth-link">
           Sign In
         </Link>
       </p>

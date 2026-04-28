@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "../common/Button";
+import "./Dashboard.css";
 
 export function ChartPanel({ series }) {
   const [mode, setMode] = useState("revenue");
@@ -8,15 +9,15 @@ export function ChartPanel({ series }) {
   const max = Math.max(...values);
 
   return (
-    <div className="glass-panel p-6">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="chart-panel">
+      <div className="panel-header-spread">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Insights</p>
-          <h3 className="mt-2 font-display text-2xl font-semibold">
+          <p className="panel-eyebrow">Insights</p>
+          <h3 className="panel-title">
             {mode === "revenue" ? "Revenue over time" : "Parking occupancy by hour"}
           </h3>
         </div>
-        <div className="flex gap-2">
+        <div className="chart-actions">
           <Button variant={mode === "revenue" ? "primary" : "secondary"} onClick={() => setMode("revenue")}>
             Revenue
           </Button>
@@ -25,16 +26,16 @@ export function ChartPanel({ series }) {
           </Button>
         </div>
       </div>
-      <div className="flex h-72 items-end gap-4 rounded-[24px] bg-gradient-to-b from-white to-blush/60 p-6">
+      <div className="chart-bars">
         {values.map((value, index) => (
-          <div key={`${mode}-${index}`} className="flex flex-1 flex-col items-center gap-3">
+          <div key={`${mode}-${index}`} className="chart-column">
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: `${(value / max) * 100}%` }}
               transition={{ delay: index * 0.05, duration: 0.5 }}
-              className="w-full rounded-t-[20px] bg-gradient-to-t from-primary to-secondary"
+              className="chart-bar"
             />
-            <span className="text-xs font-semibold text-muted">{`${8 + index}:00`}</span>
+            <span className="chart-label">{`${8 + index}:00`}</span>
           </div>
         ))}
       </div>

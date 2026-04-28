@@ -5,6 +5,7 @@ import { Button } from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTE_PATHS } from "../../constants/routes";
 import { ROLES } from "../../constants/roles";
+import "./AuthPages.css";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -27,30 +28,30 @@ export function LoginPage() {
 
   return (
     <AuthShell title="Welcome back!" subtitle="Enter your credentials to access your account. Demo accounts: admin@parking.com / client@parking.com">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block text-sm font-medium">
+      <form onSubmit={handleSubmit} className="auth-form">
+        <label className="auth-label">
           Email address
           <input
-            className="mt-2 w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:border-primary"
+            className="auth-field"
             value={form.email}
             onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
           />
         </label>
-        <label className="block text-sm font-medium">
+        <label className="auth-label">
           Password
           <input
             type="password"
-            className="mt-2 w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:border-primary"
+            className="auth-field"
             value={form.password}
             onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
           />
         </label>
-        {error ? <p className="text-sm font-semibold text-primary">{error}</p> : null}
-        <Button className="w-full">Login</Button>
+        {error ? <p className="auth-error">{error}</p> : null}
+        <Button className="auth-submit">Login</Button>
       </form>
-      <p className="mt-6 text-sm text-muted">
+      <p className="auth-switch">
         Don&apos;t have an account?{" "}
-        <Link to={ROUTE_PATHS.REGISTER} className="font-semibold text-primary">
+        <Link to={ROUTE_PATHS.REGISTER} className="auth-link">
           Sign Up
         </Link>
       </p>

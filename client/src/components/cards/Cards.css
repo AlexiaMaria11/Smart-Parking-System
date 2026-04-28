@@ -1,0 +1,53 @@
+.entity-card,
+.report-card {
+  @apply rounded-[28px] border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur-xl;
+}
+
+.entity-card-content {
+  @apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between;
+}
+
+.entity-card-content-wide {
+  @apply flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between;
+}
+
+.entity-card-eyebrow,
+.report-card-title {
+  @apply text-sm font-semibold uppercase tracking-[0.24em] text-primary;
+}
+
+.entity-card-title {
+  @apply mt-2 font-display text-2xl font-semibold;
+}
+
+.entity-card-muted {
+  @apply mt-2 text-muted;
+}
+
+.entity-card-details {
+  @apply mt-4 space-y-2 text-sm text-muted;
+}
+
+.entity-card-subsection {
+  @apply mt-5;
+}
+
+.entity-card-subtitle {
+  @apply text-sm font-semibold text-ink;
+}
+
+.entity-card-list {
+  @apply mt-2 space-y-2 text-sm text-muted;
+}
+
+.entity-card-actions {
+  @apply flex flex-wrap gap-3;
+}
+
+.report-card-value {
+  @apply mt-4 font-display text-3xl font-semibold;
+}
+
+.report-card-description {
+  @apply mt-3 text-sm leading-6 text-muted;
+}

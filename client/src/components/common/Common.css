@@ -1,0 +1,91 @@
+.button {
+  @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all;
+}
+
+.button-primary {
+  @apply bg-primary text-white shadow-soft hover:bg-[#b63d55];
+}
+
+.button-secondary {
+  @apply border border-border bg-white text-ink hover:bg-blush;
+}
+
+.button-ghost {
+  @apply bg-white/50 text-primary hover:bg-white;
+}
+
+.info-badge {
+  @apply rounded-full px-3 py-1 text-xs font-semibold;
+}
+
+.info-badge-success {
+  @apply bg-[#e9f7e1] text-[#608d38];
+}
+
+.info-badge-warning {
+  @apply bg-[#fff6da] text-[#a48200];
+}
+
+.info-badge-danger {
+  @apply bg-[#ffe4e7] text-[#b84d62];
+}
+
+.info-badge-info {
+  @apply bg-[#eaf6fb] text-[#377593];
+}
+
+.logo {
+  @apply flex items-center gap-3;
+}
+
+.logo-mark {
+  @apply flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-white shadow-soft;
+}
+
+.logo-title {
+  @apply font-display text-lg font-semibold leading-none;
+}
+
+.logo-subtitle {
+  @apply text-sm text-muted;
+}
+
+.section-heading {
+  @apply max-w-2xl;
+}
+
+.section-heading-center {
+  @apply mx-auto text-center;
+}
+
+.section-heading-eyebrow {
+  @apply mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-primary;
+}
+
+.section-heading-description {
+  @apply mt-4 text-base leading-7 text-muted;
+}
+
+.stat-card {
+  @apply rounded-[28px] border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur-xl;
+}
+
+.stat-card-content {
+  @apply flex items-start justify-between gap-3;
+}
+
+.stat-card-label {
+  @apply text-sm font-semibold text-primary;
+}
+
+.stat-card-value {
+  @apply mt-3 font-display text-3xl font-semibold;
+}
+
+.stat-card-trend {
+  @apply mt-2 text-sm text-muted;
+}
+
+.stat-card-icon {
+  @apply flex h-11 w-11 items-center justify-center rounded-2xl bg-blush text-primary;
+}

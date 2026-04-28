@@ -1,0 +1,104 @@
+.auth-shell {
+  @apply min-h-screen bg-hero px-4 py-8 sm:px-6 lg:px-10;
+}
+
+.auth-shell-grid {
+  @apply mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl items-center gap-8 lg:grid-cols-[0.95fr_1.05fr];
+}
+
+.auth-shell-panel {
+  @apply rounded-[28px] border border-white/60 bg-white/75 p-8 shadow-soft backdrop-blur-xl sm:p-10;
+}
+
+.auth-shell-copy {
+  @apply mt-10 max-w-md;
+}
+
+.auth-shell-title {
+  @apply font-display text-4xl font-semibold text-ink;
+}
+
+.auth-shell-subtitle {
+  @apply mt-3 text-muted;
+}
+
+.auth-shell-form {
+  @apply mt-8;
+}
+
+.auth-shell-preview {
+  @apply relative overflow-hidden rounded-[36px] border border-white/60 bg-white/50 p-4 shadow-soft;
+}
+
+.auth-shell-preview-bg {
+  @apply absolute inset-0;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.9), rgba(255, 231, 235, 0.45));
+}
+
+.auth-shell-image {
+  @apply relative z-10 w-full rounded-[28px] object-cover;
+}
+
+.dashboard-layout {
+  @apply min-h-screen px-4 py-4 sm:px-6 lg:px-8;
+}
+
+.dashboard-layout-grid {
+  @apply mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl gap-4 lg:grid-cols-[260px_1fr];
+}
+
+.dashboard-layout-main {
+  @apply rounded-[28px] border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur-xl overflow-hidden sm:p-7;
+}
+
+.navbar {
+  @apply sticky top-0 z-30 border-b border-white/50 bg-white/65 backdrop-blur-xl;
+}
+
+.navbar-shell {
+  @apply mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8;
+}
+
+.navbar-links {
+  @apply hidden items-center gap-8 text-sm font-semibold text-muted md:flex;
+}
+
+.navbar-actions {
+  @apply flex items-center gap-3;
+}
+
+.page-header {
+  @apply mb-8 flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-end md:justify-between;
+}
+
+.page-header-title {
+  @apply font-display text-3xl font-semibold;
+}
+
+.page-header-description {
+  @apply mt-2 text-muted;
+}
+
+.sidebar {
+  @apply flex h-full flex-col rounded-[28px] border border-white/60 bg-white/75 p-4 shadow-soft backdrop-blur-xl;
+}
+
+.sidebar-nav {
+  @apply mt-10 space-y-2;
+}
+
+.sidebar-link {
+  @apply block rounded-2xl px-4 py-3 text-sm font-semibold transition;
+}
+
+.sidebar-link-active {
+  @apply bg-primary text-white shadow-soft;
+}
+
+.sidebar-link-idle {
+  @apply text-muted hover:bg-white;
+}
+
+.sidebar-footer {
+  @apply mt-auto pt-6;
+}

@@ -1,0 +1,73 @@
+.client-header-actions {
+  @apply flex flex-wrap gap-3;
+}
+
+.client-stats-grid {
+  @apply grid gap-4 md:grid-cols-2 xl:grid-cols-4;
+}
+
+.client-dashboard-grid {
+  @apply mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr];
+}
+
+.client-stack {
+  @apply space-y-6;
+}
+
+.client-status-panel,
+.client-profile-card {
+  @apply rounded-[28px] border border-white/60 bg-white/75 p-6 shadow-soft backdrop-blur-xl;
+}
+
+.client-panel-eyebrow {
+  @apply text-sm font-semibold uppercase tracking-[0.24em] text-primary;
+}
+
+.client-reservation-wrap {
+  @apply mt-4;
+}
+
+.client-empty-copy {
+  @apply mt-4 text-muted;
+}
+
+.client-parking-grid {
+  @apply grid gap-6 2xl:grid-cols-[1.1fr_0.9fr];
+}
+
+.client-profile-grid {
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+.client-profile-details {
+  @apply mt-5 space-y-4 text-sm text-muted;
+}
+
+.client-profile-label {
+  @apply font-semibold text-ink;
+}
+
+.client-profile-actions {
+  @apply mt-6 flex flex-wrap gap-3;
+}
+
+.client-profile-copy {
+  @apply mt-4 text-sm leading-7 text-muted;
+}
+
+.client-reservations {
+  @apply space-y-8;
+}
+
+.client-reservation-heading {
+  @apply mb-4 font-display text-2xl font-semibold capitalize;
+}
+
+.client-reservation-list,
+.client-vehicle-list {
+  @apply space-y-4;
+}
+
+.client-vehicle-list {
+  @apply space-y-5;
+}

@@ -1,14 +1,16 @@
+import "./Common.css";
+
 export function StatCard({ label, value, trend, icon: Icon }) {
   return (
-    <div className="glass-panel p-5">
-      <div className="flex items-start justify-between gap-3">
+    <div className="stat-card">
+      <div className="stat-card-content">
         <div>
-          <p className="text-sm font-semibold text-primary">{label}</p>
-          <p className="mt-3 text-3xl font-display font-semibold">{value}</p>
-          <p className="mt-2 text-sm text-muted">{trend}</p>
+          <p className="stat-card-label">{label}</p>
+          <p className="stat-card-value">{value}</p>
+          <p className="stat-card-trend">{trend}</p>
         </div>
         {Icon ? (
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blush text-primary">
+          <div className="stat-card-icon">
             <Icon size={18} />
           </div>
         ) : null}

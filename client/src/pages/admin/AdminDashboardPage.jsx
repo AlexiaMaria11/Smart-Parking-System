@@ -3,6 +3,7 @@ import { StatCard } from "../../components/common/StatCard";
 import { ChartPanel } from "../../components/dashboard/ChartPanel";
 import { ActivityFeed } from "../../components/dashboard/ActivityFeed";
 import { PageHeader } from "../../components/layout/PageHeader";
+import "./AdminPages.css";
 
 export function AdminDashboardPage() {
   return (
@@ -11,12 +12,12 @@ export function AdminDashboardPage() {
         title="Admin Dashboard"
         description="Track occupancy, revenue and important parking activity from a central operational view."
       />
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="admin-stats-grid">
         {adminStats.map((item) => (
           <StatCard key={item.label} {...item} />
         ))}
       </div>
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+      <div className="admin-dashboard-grid">
         <ChartPanel series={adminChartSeries} />
         <ActivityFeed items={recentActivities} />
       </div>

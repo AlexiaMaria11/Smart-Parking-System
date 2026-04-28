@@ -1,26 +1,27 @@
 import { Button } from "../common/Button";
+import "../cards/Cards.css";
 
 export function DeviceCard({ device }) {
   return (
-    <div className="glass-panel p-5">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div className="entity-card">
+      <div className="entity-card-content-wide">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{device.type}</p>
-          <h3 className="mt-2 font-display text-2xl font-semibold">{device.name}</h3>
-          <div className="mt-4 space-y-2 text-sm text-muted">
+          <p className="entity-card-eyebrow">{device.type}</p>
+          <h3 className="entity-card-title">{device.name}</h3>
+          <div className="entity-card-details">
             <p>Status: {device.status}</p>
             <p>Uptime: {device.uptime}</p>
           </div>
-          <div className="mt-5">
-            <p className="text-sm font-semibold text-ink">Error history</p>
-            <ul className="mt-2 space-y-2 text-sm text-muted">
+          <div className="entity-card-subsection">
+            <p className="entity-card-subtitle">Error history</p>
+            <ul className="entity-card-list">
               {device.errors.map((error) => (
                 <li key={error}>• {error}</li>
               ))}
             </ul>
           </div>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="entity-card-actions">
           <Button>Restart Device</Button>
           <Button variant="secondary">Calibrate Sensor</Button>
         </div>

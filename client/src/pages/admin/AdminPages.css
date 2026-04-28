@@ -1,0 +1,19 @@
+.admin-stats-grid {
+  @apply grid gap-4 md:grid-cols-2 xl:grid-cols-4;
+}
+
+.admin-dashboard-grid {
+  @apply mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr];
+}
+
+.admin-list {
+  @apply space-y-5;
+}
+
+.admin-live-map-grid {
+  @apply grid gap-6 xl:grid-cols-[1.15fr_0.85fr];
+}
+
+.admin-reports-grid {
+  @apply grid gap-5 md:grid-cols-2 xl:grid-cols-3;
+}

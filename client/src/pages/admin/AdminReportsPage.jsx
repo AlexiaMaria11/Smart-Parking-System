@@ -1,6 +1,7 @@
 import { reports } from "../../mockData";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ReportCard } from "../../components/reports/ReportCard";
+import "./AdminPages.css";
 
 export function AdminReportsPage() {
   return (
@@ -9,7 +10,7 @@ export function AdminReportsPage() {
         title="Reports"
         description="Review occupancy, duration, financial performance and issue trends across the parking system."
       />
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="admin-reports-grid">
         {reports.map((report) => (
           <ReportCard key={report.title} report={report} />
         ))}

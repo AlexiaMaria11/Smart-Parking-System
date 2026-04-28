@@ -1,6 +1,7 @@
 import { devices } from "../../mockData";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { DeviceCard } from "../../components/hardware/DeviceCard";
+import "./AdminPages.css";
 
 export function AdminHardwarePage() {
   return (
@@ -9,7 +10,7 @@ export function AdminHardwarePage() {
         title="Hardware"
         description="Sensors, barriers and cameras are organized with health, uptime and maintenance actions."
       />
-      <div className="space-y-5">
+      <div className="admin-list">
         {devices.map((device) => (
           <DeviceCard key={device.id} device={device} />
         ))}

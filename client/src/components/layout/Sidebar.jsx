@@ -5,6 +5,7 @@ import { Button } from "../common/Button";
 import { cn } from "../../utils/formatters";
 import { useAuth } from "../../hooks/useAuth";
 import { menuByRole } from "../../mockData";
+import "./Layout.css";
 
 export function Sidebar({ role }) {
   const { pathname } = useLocation();
@@ -12,23 +13,23 @@ export function Sidebar({ role }) {
   const items = menuByRole[role] || [];
 
   return (
-    <aside className="glass-panel flex h-full flex-col p-4">
+    <aside className="sidebar">
       <Logo />
-      <nav className="mt-10 space-y-2">
+      <nav className="sidebar-nav">
         {items.map((item) => (
           <Link
             key={item.path}
             to={item.path}
             className={cn(
-              "block rounded-2xl px-4 py-3 text-sm font-semibold transition",
-              pathname === item.path ? "bg-primary text-white shadow-soft" : "text-muted hover:bg-white"
+              "sidebar-link",
+              pathname === item.path ? "sidebar-link-active" : "sidebar-link-idle"
             )}
           >
             {item.label}
           </Link>
         ))}
       </nav>
-      <div className="mt-auto pt-6">
+      <div className="sidebar-footer">
         <Button variant="secondary" className="w-full justify-center gap-2" onClick={logout}>
           <LogOut size={16} />
           Logout

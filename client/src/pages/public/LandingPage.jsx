@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles, Waves } from "lucide-react";
 import { Link } from "react-router-dom";
 import parkingHero from "../../assets/parking-hero.png";
@@ -8,27 +9,55 @@ import { SectionHeading } from "../../components/common/SectionHeading";
 import { landingFeatures, liveStats } from "../../mockData";
 import { StatCard } from "../../components/common/StatCard";
 import { useLiveParkingStats } from "../../hooks/useLiveParkingStats";
+import "./LandingPage.css";
 
 export function LandingPage() {
+  const heroRef = useRef(null);
   const stats = useLiveParkingStats(liveStats);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  const heroFilter = useTransform(scrollYProgress, [0, 1], ["blur(0px)", "blur(10px)"]);
+  const heroImageY = useTransform(scrollYProgress, [0, 1], ["0px", "-140px"]);
 
   return (
     <div>
       <Navbar />
-      <section className="overflow-hidden">
-        <div className="app-shell grid items-center gap-12 py-14 lg:grid-cols-[0.95fr_1.05fr] lg:py-20">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-primary shadow-soft">
+      <motion.section
+        ref={heroRef}
+        className="landing-hero"
+        style={{ filter: heroFilter }}
+      >
+        <motion.div
+          className="landing-hero-media"
+          style={{ y: heroImageY }}
+          aria-hidden="true"
+        >
+          <div className="landing-hero-media-shell">
+            <img src={parkingHero} alt="" className="landing-hero-image" />
+          </div>
+        </motion.div>
+        <div className="landing-hero-overlay" />
+        <div className="landing-hero-content">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="landing-hero-copy"
+          >
+            <div className="landing-eyebrow">
               <Sparkles size={16} />
               Smart university parking orchestration
             </div>
-            <h1 className="font-display text-5xl font-semibold leading-tight text-ink sm:text-6xl">
+            <h1 className="landing-title">
               Find, reserve and manage campus parking with confidence.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
-              A modern smart parking system for students, staff and administrators, designed around real-time spot visibility, clean dashboards and hardware-ready workflows.
+            <p className="landing-description">
+              A modern smart parking system for students, staff and
+              administrators, designed around real-time spot visibility, clean
+              dashboards and hardware-ready workflows.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="landing-actions">
               <Link to="/register">
                 <Button className="gap-2">
                   Find Parking Spots
@@ -39,22 +68,24 @@ export function LandingPage() {
                 <Button variant="secondary">Login</Button>
               </Link>
             </div>
-            <div id="availability" className="mt-10 grid gap-4 sm:grid-cols-2">
-              <StatCard label="Live available spots" value={stats.availableSpots} trend="Updated via Socket.IO" />
-              <StatCard label="Occupied spots" value={stats.occupiedSpots} trend="Real-time parking flow" />
+            <div id="availability" className="landing-stats">
+              <StatCard
+                label="Live available spots"
+                value={stats.availableSpots}
+                trend="Updated via Socket.IO"
+              />
+              <StatCard
+                label="Occupied spots"
+                value={stats.occupiedSpots}
+                trend="Real-time parking flow"
+              />
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} className="relative">
-            <div className="absolute -right-10 -top-10 h-52 w-52 rounded-full bg-secondary/25 blur-3xl" />
-            <div className="absolute -bottom-12 left-12 h-52 w-52 rounded-full bg-accent/20 blur-3xl" />
-            <div className="glass-panel relative overflow-hidden p-4">
-              <img src={parkingHero} alt="Smart parking illustration" className="w-full rounded-[28px] object-cover" />
-            </div>
-          </motion.div>
+          <div className="landing-hero-spacer" aria-hidden="true" />
         </div>
-      </section>
+      </motion.section>
 
-      <section id="features" className="py-10 lg:py-16">
+      <section id="features" className="landing-features">
         <div className="app-shell">
           <SectionHeading
             eyebrow="Features"
@@ -62,36 +93,47 @@ export function LandingPage() {
             description="Soft pink surfaces, rounded panels, clean card spacing and dashboard-focused modules mirror the UI style from your existing design."
             align="center"
           />
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="landing-feature-grid">
             {landingFeatures.map((feature) => (
-              <div key={feature.title} className="glass-panel p-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blush text-primary">
+              <div key={feature.title} className="landing-card">
+                <div className="landing-feature-icon">
                   <feature.icon size={18} />
                 </div>
-                <h3 className="mt-5 font-display text-2xl font-semibold">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-muted">{feature.description}</p>
+                <h3 className="landing-card-title">{feature.title}</h3>
+                <p className="landing-card-description">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="pb-16">
-        <div className="app-shell grid gap-6 lg:grid-cols-3">
-          <div className="glass-panel p-6">
+      <section id="how-it-works" className="landing-how">
+        <div className="landing-how-grid">
+          <div className="landing-card">
             <Waves className="text-primary" />
-            <h3 className="mt-5 font-display text-2xl font-semibold">Role-based experience</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">Admins get operational visibility while clients get a smooth reservation journey and saved vehicles.</p>
+            <h3 className="landing-card-title">Role-based experience</h3>
+            <p className="landing-card-description">
+              Admins get operational visibility while clients get a smooth
+              reservation journey and saved vehicles.
+            </p>
           </div>
-          <div className="glass-panel p-6">
+          <div className="landing-card">
             <Waves className="text-primary" />
-            <h3 className="mt-5 font-display text-2xl font-semibold">Hardware-ready backend</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">Sensors, cameras and barriers already have dedicated modules, services and report flows.</p>
+            <h3 className="landing-card-title">Hardware-ready backend</h3>
+            <p className="landing-card-description">
+              Sensors, cameras and barriers already have dedicated modules,
+              services and report flows.
+            </p>
           </div>
-          <div className="glass-panel p-6">
+          <div className="landing-card">
             <Waves className="text-primary" />
-            <h3 className="mt-5 font-display text-2xl font-semibold">AI/OCR placeholder</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">The Python service includes the expected capture, detect and OCR stages for license plate recognition.</p>
+            <h3 className="landing-card-title">AI/OCR placeholder</h3>
+            <p className="landing-card-description">
+              The Python service includes the expected capture, detect and OCR
+              stages for license plate recognition.
+            </p>
           </div>
         </div>
       </section>
