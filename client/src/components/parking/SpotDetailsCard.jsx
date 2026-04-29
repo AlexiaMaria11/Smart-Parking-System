@@ -1,7 +1,8 @@
+import { X } from "lucide-react";
 import { Button } from "../common/Button";
 import "./Parking.css";
 
-export function SpotDetailsCard({ spot, adminMode = false }) {
+export function SpotDetailsCard({ spot, adminMode = false, onClose }) {
   if (!spot) {
     return (
       <div className="spot-details">
@@ -18,7 +19,19 @@ export function SpotDetailsCard({ spot, adminMode = false }) {
           <p className="spot-details-eyebrow">Spot overview</p>
           <h3 className="spot-details-title">{spot.id}</h3>
         </div>
-        <span className="spot-details-status">{spot.state}</span>
+        <div className="spot-details-header-actions">
+          <span className="spot-details-status">{spot.state}</span>
+          {onClose ? (
+            <button
+              type="button"
+              className="spot-details-close"
+              onClick={onClose}
+              aria-label="Close spot overview"
+            >
+              <X size={18} />
+            </button>
+          ) : null}
+        </div>
       </div>
       <div className="spot-details-list">
         <p><span className="spot-details-label">Price:</span> {spot.price}</p>

@@ -12,14 +12,12 @@ import parkingHero from "../../assets/parking-hero.png";
 import { Navbar } from "../../components/layout/Navbar";
 import { Button } from "../../components/common/Button";
 import { SectionHeading } from "../../components/common/SectionHeading";
-import { landingFeatures, liveStats } from "../../mockData";
-import { StatCard } from "../../components/common/StatCard";
-import { useLiveParkingStats } from "../../hooks/useLiveParkingStats";
+import { landingFeatures, parkingSpots } from "../../mockData";
+import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import "./LandingPage.css";
 
 export function LandingPage() {
   const heroRef = useRef(null);
-  const stats = useLiveParkingStats(liveStats);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -74,18 +72,6 @@ export function LandingPage() {
                 <Button variant="secondary">Login</Button>
               </Link>
             </div>
-            <div id="availability" className="landing-stats">
-              <StatCard
-                label="Live available spots"
-                value={stats.availableSpots}
-                trend="Updated just now"
-              />
-              <StatCard
-                label="Occupied spots"
-                value={stats.occupiedSpots}
-                trend="Real-time - refreshes automatically"
-              />
-            </div>
           </motion.div>
           <div className="landing-hero-spacer" aria-hidden="true" />
         </div>
@@ -111,6 +97,23 @@ export function LandingPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="live-map" className="landing-live-map">
+        <div className="app-shell">
+          <SectionHeading
+            eyebrow="Live map"
+            title="See parking availability before you arrive"
+            description="Check live spot states, compare prices and inspect restrictions from the public map preview."
+            align="center"
+          />
+          <div className="landing-live-map-grid">
+            <ParkingGrid
+              spots={parkingSpots}
+              isInteractive={false}
+            />
           </div>
         </div>
       </section>

@@ -10,7 +10,7 @@ export function Navbar() {
         <Logo />
         <nav className="navbar-links">
           <a href="#features">Features</a>
-          <a href="#availability">Live Map</a>
+          <a href="#live-map">Live Map</a>
           <a href="#how-it-works">How it works</a>
         </nav>
         <div className="navbar-actions">

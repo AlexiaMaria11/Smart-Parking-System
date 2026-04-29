@@ -10,33 +10,37 @@ const stateClasses = {
   defective: "parking-spot-defective"
 };
 
-export function ParkingGrid({ spots, selectedSpot, onSelect }) {
+export function ParkingGrid({ spots, selectedSpot, onSelect, isInteractive = true }) {
   return (
-    <div className="parking-grid">
+    <div className={cn("parking-grid", !isInteractive && "parking-grid-preview")}>
       <div className="parking-grid-list">
-        {spots.map((spot, index) => (
-          <motion.button
-            key={spot.id}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.04 }}
-            onClick={() => onSelect?.(spot)}
-            className={cn(
-              "group parking-spot",
-              stateClasses[spot.state],
-              selectedSpot?.id === spot.id ? "parking-spot-active" : ""
-            )}
-          >
-            <div className="parking-spot-top">
-              <span className="parking-spot-id">{spot.id}</span>
-              <span className="parking-spot-state">{spot.state}</span>
-            </div>
-            <div className="parking-spot-body">
-              <p className="parking-spot-number">{spot.number}</p>
-              <p className="parking-spot-price">{spot.price}</p>
-            </div>
-          </motion.button>
-        ))}
+        {spots.map((spot, index) => {
+          const SpotElement = isInteractive ? motion.button : motion.div;
+
+          return (
+            <SpotElement
+              key={spot.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04 }}
+              onClick={isInteractive ? (event) => onSelect?.(spot, event) : undefined}
+              className={cn(
+                "group parking-spot",
+                stateClasses[spot.state],
+                selectedSpot?.id === spot.id ? "parking-spot-active" : ""
+              )}
+            >
+              <div className="parking-spot-top">
+                <span className="parking-spot-id">{spot.id}</span>
+                <span className="parking-spot-state">{spot.state}</span>
+              </div>
+              <div className="parking-spot-body">
+                <p className="parking-spot-number">{spot.number}</p>
+                <p className="parking-spot-price">{spot.price}</p>
+              </div>
+            </SpotElement>
+          );
+        })}
       </div>
     </div>
   );

@@ -47,6 +47,10 @@
   @apply relative min-h-28 rounded-[24px] border border-white/50 p-4 text-left shadow-panel transition hover:-translate-y-1;
 }
 
+.parking-grid-preview .parking-spot {
+  @apply cursor-default hover:translate-y-0;
+}
+
 .parking-spot-available {
   @apply bg-[#b7de7d] text-[#46652d];
 }
@@ -107,8 +111,16 @@
   @apply flex items-start justify-between gap-4;
 }
 
+.spot-details-header-actions {
+  @apply flex items-center gap-2;
+}
+
 .spot-details-status {
   @apply rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase text-muted;
+}
+
+.spot-details-close {
+  @apply flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-primary transition hover:bg-blush;
 }
 
 .spot-details-list {
@@ -121,4 +133,20 @@
 
 .spot-details-actions {
   @apply mt-6 flex flex-wrap gap-3;
+}
+
+.spot-details-overlay-root {
+  @apply fixed inset-0 z-40 bg-white/5;
+  will-change: opacity, backdrop-filter;
+}
+
+.spot-details-dismiss-layer {
+  @apply absolute inset-0 cursor-default bg-transparent;
+}
+
+.spot-details-popover {
+  @apply absolute z-50 w-[min(26rem,calc(100vw-2rem))];
+  left: var(--spot-popover-x);
+  top: min(max(1rem, var(--spot-popover-y)), calc(100vh - 1rem));
+  transform: translate(-50%, -50%);
 }

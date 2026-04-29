@@ -9,13 +9,15 @@ import "./ClientPages.css";
 
 export function ClientDashboardPage() {
   const { user } = useAuth();
-  const activeReservation = reservations.find((item) => item.section === "active");
+  const activeReservation = reservations.find(
+    (item) => item.section === "active",
+  );
 
   return (
     <div>
       <PageHeader
         title={`Welcome, ${user?.name || "Client"}`}
-        description="Manage your current reservation, vehicles and parking activity from one student-friendly dashboard."
+        description="Manage your current reservation, vehicles and parking activity from your dashboard."
         action={
           <div className="client-header-actions">
             <Button>Find Parking</Button>
@@ -38,7 +40,9 @@ export function ClientDashboardPage() {
                 <ReservationCard reservation={activeReservation} />
               </div>
             ) : (
-              <p className="client-empty-copy">No active reservation right now.</p>
+              <p className="client-empty-copy">
+                No active reservation right now.
+              </p>
             )}
           </div>
         </div>
