@@ -1,8 +1,15 @@
-import { clientStats, notifications, reservations } from "../../mockData";
+import {
+  clientChartLabels,
+  clientChartSeries,
+  clientChartTitles,
+  clientStats,
+  notifications,
+  reservations,
+} from "../../mockData";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { StatCard } from "../../components/common/StatCard";
+import { ChartPanel } from "../../components/dashboard/ChartPanel";
 import { NotificationPanel } from "../../components/dashboard/NotificationPanel";
-import { ReservationCard } from "../../components/reservations/ReservationCard";
 import { Button } from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
 import "./ClientPages.css";
@@ -36,8 +43,34 @@ export function ClientDashboardPage() {
           <div className="client-status-panel">
             <p className="client-panel-eyebrow">Current reservation status</p>
             {activeReservation ? (
-              <div className="client-reservation-wrap">
-                <ReservationCard reservation={activeReservation} />
+              <div className="client-current-reservation">
+                <div>
+                  <p className="client-current-status">
+                    {activeReservation.status}
+                  </p>
+                  <h3 className="client-current-spot">
+                    {activeReservation.spot}
+                  </h3>
+                </div>
+                <div className="client-current-details">
+                  <p>
+                    <span>Date:</span> {activeReservation.date}
+                  </p>
+                  <p>
+                    <span>Time:</span> {activeReservation.interval}
+                  </p>
+                  <p>
+                    <span>Vehicle:</span> {activeReservation.vehicle}
+                  </p>
+                  <p>
+                    <span>Cost:</span> {activeReservation.cost}
+                  </p>
+                </div>
+                <div className="client-current-actions">
+                  <Button variant="secondary">View Details</Button>
+                  <Button variant="secondary">Extend</Button>
+                  <Button>Cancel</Button>
+                </div>
               </div>
             ) : (
               <p className="client-empty-copy">
@@ -45,6 +78,17 @@ export function ClientDashboardPage() {
               </p>
             )}
           </div>
+          <ChartPanel
+            series={clientChartSeries}
+            labels={clientChartLabels}
+            titles={clientChartTitles}
+            buttonLabels={{ parkingTime: "Time", spending: "Spending" }}
+            formatters={{
+              parkingTime: (value) => `${value} min`,
+              spending: (value) => `${value} RON`,
+            }}
+            eyebrow="Personal activity"
+          />
         </div>
         <NotificationPanel notifications={notifications} />
       </div>

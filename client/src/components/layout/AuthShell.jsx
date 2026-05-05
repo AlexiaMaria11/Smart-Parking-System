@@ -6,6 +6,17 @@ import "./Layout.css";
 export function AuthShell({ title, subtitle, children }) {
   return (
     <div className="auth-shell">
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="auth-shell-media"
+        aria-hidden="true"
+      >
+        <div className="auth-shell-media-shell">
+          <img src={parkingHero} alt="" className="auth-shell-image" />
+        </div>
+      </motion.div>
+      <div className="auth-shell-overlay" />
       <div className="auth-shell-grid">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -19,14 +30,7 @@ export function AuthShell({ title, subtitle, children }) {
           </div>
           <div className="auth-shell-form">{children}</div>
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="auth-shell-preview"
-        >
-          <div className="auth-shell-preview-bg" />
-          <img src={parkingHero} alt="Smart parking illustration" className="auth-shell-image" />
-        </motion.div>
+        <div className="auth-shell-spacer" aria-hidden="true" />
       </div>
     </div>
   );

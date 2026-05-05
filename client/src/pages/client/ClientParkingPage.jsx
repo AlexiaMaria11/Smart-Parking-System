@@ -4,7 +4,6 @@ import { parkingSpots } from "../../mockData";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import { SpotDetailsCard } from "../../components/parking/SpotDetailsCard";
-import { LiveRoutePreview } from "../../components/parking/LiveRoutePreview";
 import "./ClientPages.css";
 
 export function ClientParkingPage() {
@@ -18,7 +17,7 @@ export function ClientParkingPage() {
     setSelectedSpot(spot);
     setIsOverviewOpen(true);
     setOverviewPosition({
-      x: rect.left + rect.width / 2 - 290,
+      x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2 + 160,
     });
   };
@@ -36,7 +35,6 @@ export function ClientParkingPage() {
             selectedSpot={selectedSpot}
             onSelect={openSpotOverview}
           />
-          <LiveRoutePreview />
         </div>
       </div>
       <AnimatePresence onExitComplete={() => setSelectedSpot(null)}>

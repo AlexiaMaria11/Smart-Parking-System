@@ -1,6 +1,6 @@
 .entity-card,
 .report-card {
-  @apply rounded-[28px] border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur-xl;
+  @apply rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
 }
 
 .entity-card-content {

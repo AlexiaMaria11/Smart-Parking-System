@@ -6,7 +6,6 @@ const stateClasses = {
   available: "parking-spot-available",
   occupied: "parking-spot-occupied",
   reserved: "parking-spot-reserved",
-  selected: "parking-spot-selected",
   defective: "parking-spot-defective"
 };
 
@@ -26,8 +25,9 @@ export function ParkingGrid({ spots, selectedSpot, onSelect, isInteractive = tru
               onClick={isInteractive ? (event) => onSelect?.(spot, event) : undefined}
               className={cn(
                 "group parking-spot",
-                stateClasses[spot.state],
-                selectedSpot?.id === spot.id ? "parking-spot-active" : ""
+                selectedSpot?.id === spot.id
+                  ? "parking-spot-selected parking-spot-active"
+                  : stateClasses[spot.state]
               )}
             >
               <div className="parking-spot-top">

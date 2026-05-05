@@ -8,12 +8,12 @@ export const landingFeatures = [
   },
   {
     title: "Reserve in seconds",
-    description: "Pick your spot, confirm your booking, and get a QR code sent instantly to your phone.",
+    description: "Pick your spot, choose the time interval, and confirm your reservation instantly.",
     icon: CalendarCheck
   },
   {
-    title: "Built for everyone",
-    description: "Designed for drivers, staff and administrators - with role-based access and admin dashboards included.",
+    title: "Built for clients and admins",
+    description: "Clients manage reservations and vehicles, while administrators monitor spots, hardware and reports.",
     icon: Users
   }
 ];
@@ -33,8 +33,33 @@ export const adminStats = [
 ];
 
 export const adminChartSeries = {
-  revenue: [20, 35, 30, 48, 55, 80, 73],
-  occupancy: [12, 22, 44, 66, 58, 48, 28]
+  occupancy: [38, 52, 71, 86, 79, 63, 47],
+  revenue: [460, 720, 890, 1280, 1120, 980, 760]
+};
+
+export const adminChartLabels = {
+  occupancy: ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+  revenue: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+};
+
+export const adminChartTitles = {
+  occupancy: "Hourly occupancy simulation",
+  revenue: "Weekly revenue simulation"
+};
+
+export const clientChartSeries = {
+  parkingTime: [45, 90, 70, 120, 55, 140, 80],
+  spending: [18, 32, 24, 44, 20, 52, 28]
+};
+
+export const clientChartLabels = {
+  parkingTime: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"],
+  spending: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]
+};
+
+export const clientChartTitles = {
+  parkingTime: "Parking time for recent reservations",
+  spending: "Monthly spending simulation"
 };
 
 export const recentActivities = [
@@ -49,14 +74,14 @@ export const parkingSpots = [
   { id: "A1", number: 1, state: "occupied", price: "5 RON/h", user: "Andrei Pop", remainingTime: "01:25", plate: "B-92-UNI", restrictions: "EV priority" },
   { id: "A2", number: 2, state: "available", price: "5 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Student" },
   { id: "A3", number: 3, state: "available", price: "4 RON/h", user: null, remainingTime: null, plate: null, restrictions: "None" },
-  { id: "A4", number: 4, state: "reserved", price: "4 RON/h", user: "Maria I.", remainingTime: "Starts in 15m", plate: "CJ-11-PKS", restrictions: "Faculty staff" },
+  { id: "A4", number: 4, state: "reserved", price: "4 RON/h", user: "Maria I.", remainingTime: "Starts in 15m", plate: "CJ-11-PKS", restrictions: "Reserved area" },
   { id: "B5", number: 5, state: "defective", price: "4 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Maintenance" },
-  { id: "B6", number: 6, state: "selected", price: "5 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Covered" },
+  { id: "B6", number: 6, state: "available", price: "5 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Covered" },
   { id: "B7", number: 7, state: "occupied", price: "5 RON/h", user: "Alex M.", remainingTime: "00:40", plate: "TM-04-AI", restrictions: "None" },
   { id: "B8", number: 8, state: "available", price: "6 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Premium" },
   { id: "C9", number: 9, state: "available", price: "4 RON/h", user: null, remainingTime: null, plate: null, restrictions: "None" },
   { id: "C10", number: 10, state: "reserved", price: "6 RON/h", user: "Sorina C.", remainingTime: "Starts in 50m", plate: "IS-88-PAR", restrictions: "Premium" },
-  { id: "C11", number: 11, state: "selected", price: "5 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Near lab" },
+  { id: "C11", number: 11, state: "available", price: "5 RON/h", user: null, remainingTime: null, plate: null, restrictions: "Near lab" },
   { id: "C12", number: 12, state: "available", price: "4 RON/h", user: null, remainingTime: null, plate: null, restrictions: "None" }
 ];
 

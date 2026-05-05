@@ -1,5 +1,5 @@
 .button {
-  @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all;
+  @apply inline-flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-all;
 }
 
 .button-primary {
@@ -67,7 +67,7 @@
 }
 
 .stat-card {
-  @apply rounded-[28px] border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur-xl;
+  @apply rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
 }
 
 .stat-card-content {
@@ -87,5 +87,5 @@
 }
 
 .stat-card-icon {
-  @apply flex h-11 w-11 items-center justify-center rounded-2xl bg-blush text-primary;
+  @apply flex h-9 w-9 items-center justify-center rounded-lg bg-blush text-primary;
 }

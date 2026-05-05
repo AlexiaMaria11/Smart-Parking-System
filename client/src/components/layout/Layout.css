@@ -1,13 +1,40 @@
 .auth-shell {
-  @apply min-h-screen bg-hero px-4 py-8 sm:px-6 lg:px-10;
+  @apply relative isolate min-h-screen overflow-hidden px-0 py-0;
+  background: #feeaea;
+}
+
+.auth-shell-media {
+  @apply pointer-events-none absolute inset-0 -z-10;
+}
+
+.auth-shell-media-shell {
+  @apply relative mx-auto h-full w-full max-w-[1500px] pl-4 pr-5 sm:pl-5 sm:pr-7 lg:pl-2 lg:pr-8 xl:pl-3 xl:pr-10;
+}
+
+.auth-shell-overlay {
+  @apply absolute inset-0 -z-10;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(254, 234, 234, 0.99) 0%,
+      rgba(254, 234, 234, 0.88) 34%,
+      rgba(254, 234, 234, 0.28) 64%,
+      rgba(254, 234, 234, 0.04) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 248, 247, 0.2) 0%,
+      rgba(254, 234, 234, 0.06) 56%,
+      rgba(254, 234, 234, 0.58) 100%
+    );
 }
 
 .auth-shell-grid {
-  @apply mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl items-center gap-8 lg:grid-cols-[0.95fr_1.05fr];
+  @apply mx-auto grid min-h-screen w-full max-w-[1500px] items-center py-10 pl-4 pr-5 sm:pl-5 sm:pr-7 lg:grid-cols-[0.84fr_1.16fr] lg:py-14 lg:pl-2 lg:pr-8 xl:pl-3 xl:pr-10;
 }
 
 .auth-shell-panel {
-  @apply rounded-[28px] border border-white/60 bg-white/75 p-8 shadow-soft backdrop-blur-xl sm:p-10;
+  @apply max-w-[520px] rounded-[28px] border border-white/60 bg-white/70 p-7 backdrop-blur-xl sm:p-9;
 }
 
 .auth-shell-copy {
@@ -26,17 +53,16 @@
   @apply mt-8;
 }
 
-.auth-shell-preview {
-  @apply relative overflow-hidden rounded-[36px] border border-white/60 bg-white/50 p-4 shadow-soft;
-}
-
-.auth-shell-preview-bg {
-  @apply absolute inset-0;
-  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.9), rgba(255, 231, 235, 0.45));
-}
-
 .auth-shell-image {
-  @apply relative z-10 w-full rounded-[28px] object-cover;
+  @apply absolute max-h-[540px] max-w-none object-contain object-bottom opacity-100;
+  bottom: 13%;
+  right: -2rem;
+  height: 62%;
+  width: 135%;
+}
+
+.auth-shell-spacer {
+  @apply hidden lg:block;
 }
 
 .dashboard-layout {
@@ -45,31 +71,60 @@
 
 .dashboard-layout-grid {
   @apply grid min-h-screen gap-0 transition-[grid-template-columns] duration-300 ease-out;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 220px minmax(0, 1fr);
 }
 
 .dashboard-layout-grid-collapsed {
-  grid-template-columns: 132px minmax(0, 1fr);
+  grid-template-columns: 104px minmax(0, 1fr);
 }
 
 .dashboard-layout-main {
-  @apply m-0 min-w-0 overflow-hidden bg-white/75 p-5 shadow-soft backdrop-blur-xl sm:m-4 sm:rounded-[28px] sm:border sm:border-white/60 sm:p-7;
+  @apply min-w-0 overflow-hidden bg-transparent p-5 sm:p-7;
 }
 
 .navbar {
-  @apply sticky top-0 z-30 border-b border-white/50 bg-white/65 backdrop-blur-xl;
+  @apply sticky top-0 z-30 border-b border-white/60 bg-white/80 backdrop-blur-xl;
 }
 
 .navbar-shell {
-  @apply mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8;
+  @apply mx-auto flex w-full max-w-[1500px] items-center justify-between py-4 pl-4 pr-5 sm:pl-5 sm:pr-7 lg:pl-2 lg:pr-8 xl:pl-3 xl:pr-10;
 }
 
 .navbar-links {
-  @apply hidden items-center gap-8 text-sm font-semibold text-muted md:flex;
+  @apply hidden items-center gap-7 text-sm font-bold text-ink md:flex;
+}
+
+.navbar-links a {
+  @apply relative py-2 text-ink/80 transition-colors duration-200 ease-out;
+}
+
+.navbar-links a::after {
+  @apply absolute bottom-0 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-primary transition-transform duration-200 ease-out;
+  content: "";
+}
+
+.navbar-links a:hover {
+  @apply text-primary;
+}
+
+.navbar-links a:hover::after {
+  @apply scale-x-100;
+}
+
+.navbar-links a:focus-visible {
+  @apply rounded-sm outline-none ring-2 ring-primary ring-offset-4 ring-offset-white;
 }
 
 .navbar-actions {
   @apply flex items-center gap-3;
+}
+
+.navbar-actions .navbar-button {
+  @apply min-h-9 rounded-lg px-3.5 py-2 text-sm;
+}
+
+.navbar-actions .navbar-login-button {
+  @apply border border-primary/20 bg-white/55 hover:border-primary/35;
 }
 
 .page-header {
@@ -105,15 +160,15 @@
 }
 
 .sidebar-toggle {
-  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/30 bg-white text-primary transition hover:bg-blush;
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/30 bg-white text-primary transition hover:bg-blush;
 }
 
 .sidebar-nav {
-  @apply mt-16 space-y-8;
+  @apply mt-12 space-y-4;
 }
 
 .sidebar-link {
-  @apply flex h-[70px] items-center gap-6 rounded-lg border px-8 text-lg font-medium transition;
+  @apply flex h-12 items-center gap-4 rounded-lg border px-5 text-sm font-semibold transition;
   background: rgba(197, 70, 95, 0.42);
   border-color: rgba(108, 35, 52, 0.2);
   box-shadow:
@@ -142,9 +197,9 @@
 
 .sidebar-link-icon {
   @apply shrink-0;
-  width: 28px;
-  height: 28px;
-  stroke-width: 3;
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.75;
 }
 
 .sidebar-footer {
@@ -171,7 +226,7 @@
 
 .sidebar-collapsed .sidebar-link,
 .sidebar-collapsed .sidebar-logout {
-  @apply h-[70px] w-[100px] px-0;
+  @apply h-12 w-20 px-0;
 }
 
 .sidebar-collapsed .sidebar-nav,
@@ -180,21 +235,49 @@
 }
 
 @media (min-width: 640px) {
+  .auth-shell-image {
+    bottom: 16%;
+    right: -2.5rem;
+    height: 72%;
+    width: 112%;
+  }
+
   .dashboard-layout-grid {
-    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-columns: 230px minmax(0, 1fr);
   }
 
   .dashboard-layout-grid-collapsed {
-    grid-template-columns: 132px minmax(0, 1fr);
+    grid-template-columns: 104px minmax(0, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
+  .auth-shell-image {
+    bottom: 18%;
+    right: -3.5rem;
+    height: 90%;
+    width: 64%;
+  }
+
   .dashboard-layout-grid {
-    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-columns: 240px minmax(0, 1fr);
   }
 
   .dashboard-layout-grid-collapsed {
-    grid-template-columns: 132px minmax(0, 1fr);
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .auth-shell-image {
+    bottom: 16%;
+    right: -4.5rem;
+    width: 68%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .auth-shell-image {
+    right: -5rem;
   }
 }

@@ -16,7 +16,15 @@
 
 .client-status-panel,
 .client-profile-card {
-  @apply rounded-[28px] border border-white/60 bg-white/75 p-6 shadow-soft backdrop-blur-xl;
+  @apply rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
+}
+
+.client-profile-card-settings {
+  @apply flex flex-col;
+}
+
+.client-profile-card-settings .client-profile-actions {
+  @apply mt-auto pt-6;
 }
 
 .client-panel-eyebrow {
@@ -25,6 +33,30 @@
 
 .client-reservation-wrap {
   @apply mt-4;
+}
+
+.client-current-reservation {
+  @apply mt-5;
+}
+
+.client-current-status {
+  @apply text-sm font-semibold uppercase tracking-[0.2em] text-primary;
+}
+
+.client-current-spot {
+  @apply mt-2 font-display text-3xl font-semibold text-ink;
+}
+
+.client-current-details {
+  @apply mt-5 grid gap-3 text-sm text-muted sm:grid-cols-2;
+}
+
+.client-current-details span {
+  @apply font-semibold text-ink;
+}
+
+.client-current-actions {
+  @apply mt-6 flex flex-wrap gap-3;
 }
 
 .client-empty-copy {
@@ -56,18 +88,21 @@
 }
 
 .client-reservations {
-  @apply space-y-8;
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+.client-reservation-section {
+  @apply min-w-0;
 }
 
 .client-reservation-heading {
-  @apply mb-4 font-display text-2xl font-semibold capitalize;
+  @apply mb-4 font-display text-xl font-semibold capitalize text-ink;
 }
 
-.client-reservation-list,
-.client-vehicle-list {
+.client-reservation-list {
   @apply space-y-4;
 }
 
 .client-vehicle-list {
-  @apply space-y-5;
+  @apply grid gap-5 md:grid-cols-2 xl:grid-cols-3;
 }

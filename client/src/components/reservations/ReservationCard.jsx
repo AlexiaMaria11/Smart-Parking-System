@@ -1,12 +1,14 @@
 import { Button } from "../common/Button";
 import "../cards/Cards.css";
 
-export function ReservationCard({ reservation }) {
+export function ReservationCard({ reservation, showStatus = true }) {
   return (
     <div className="entity-card">
       <div className="entity-card-content-wide">
         <div>
-          <p className="entity-card-eyebrow">{reservation.status}</p>
+          {showStatus ? (
+            <p className="entity-card-eyebrow">{reservation.status}</p>
+          ) : null}
           <h3 className="entity-card-title">{reservation.spot}</h3>
           <div className="entity-card-details">
             <p>Date: {reservation.date}</p>

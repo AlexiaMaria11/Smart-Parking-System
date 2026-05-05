@@ -26,7 +26,7 @@ export function ClientProfilePage() {
             <Button variant="secondary">Update Settings</Button>
           </div>
         </div>
-        <div className="client-profile-card">
+        <div className="client-profile-card client-profile-card-settings">
           <p className="client-panel-eyebrow">Account settings</p>
           <p className="client-profile-copy">
             This area is prepared for delete account, notification preferences and logout handling.

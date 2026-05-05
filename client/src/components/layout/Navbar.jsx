@@ -15,10 +15,12 @@ export function Navbar() {
         </nav>
         <div className="navbar-actions">
           <Link to="/login">
-            <Button variant="ghost">Login</Button>
+            <Button variant="ghost" className="navbar-button navbar-login-button">
+              Login
+            </Button>
           </Link>
           <Link to="/register">
-            <Button>Sign Up</Button>
+            <Button className="navbar-button">Sign Up</Button>
           </Link>
         </div>
       </div>

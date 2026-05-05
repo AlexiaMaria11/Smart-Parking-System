@@ -4,7 +4,6 @@ import { parkingSpots } from "../../mockData";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import { SpotDetailsCard } from "../../components/parking/SpotDetailsCard";
-import { LiveRoutePreview } from "../../components/parking/LiveRoutePreview";
 import "./AdminPages.css";
 
 export function AdminLiveMapPage() {
@@ -18,8 +17,8 @@ export function AdminLiveMapPage() {
     setSelectedSpot(spot);
     setIsOverviewOpen(true);
     setOverviewPosition({
-      x: rect.left + rect.width / 2 - 140,
-      y: rect.top + rect.height / 2
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2 + 160,
     });
   };
 
@@ -31,8 +30,11 @@ export function AdminLiveMapPage() {
       />
       <div className="admin-live-map-grid">
         <div className="admin-stack">
-          <ParkingGrid spots={parkingSpots} selectedSpot={selectedSpot} onSelect={openSpotOverview} />
-          <LiveRoutePreview />
+          <ParkingGrid
+            spots={parkingSpots}
+            selectedSpot={selectedSpot}
+            onSelect={openSpotOverview}
+          />
         </div>
       </div>
       <AnimatePresence onExitComplete={() => setSelectedSpot(null)}>
@@ -64,7 +66,7 @@ export function AdminLiveMapPage() {
               transition={{ duration: 0.16, ease: "easeOut" }}
               style={{
                 "--spot-popover-x": `${overviewPosition.x}px`,
-                "--spot-popover-y": `${overviewPosition.y}px`
+                "--spot-popover-y": `${overviewPosition.y}px`,
               }}
             >
               <SpotDetailsCard

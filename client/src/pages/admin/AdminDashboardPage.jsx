@@ -1,4 +1,10 @@
-import { adminChartSeries, adminStats, recentActivities } from "../../mockData";
+import {
+  adminChartLabels,
+  adminChartSeries,
+  adminChartTitles,
+  adminStats,
+  recentActivities,
+} from "../../mockData";
 import { StatCard } from "../../components/common/StatCard";
 import { ChartPanel } from "../../components/dashboard/ChartPanel";
 import { ActivityFeed } from "../../components/dashboard/ActivityFeed";
@@ -18,7 +24,16 @@ export function AdminDashboardPage() {
         ))}
       </div>
       <div className="admin-dashboard-grid">
-        <ChartPanel series={adminChartSeries} />
+        <ChartPanel
+          series={adminChartSeries}
+          labels={adminChartLabels}
+          titles={adminChartTitles}
+          buttonLabels={{ occupancy: "Occupancy", revenue: "Revenue" }}
+          formatters={{
+            occupancy: (value) => `${value}%`,
+            revenue: (value) => `${value} RON`,
+          }}
+        />
         <ActivityFeed items={recentActivities} />
       </div>
     </div>

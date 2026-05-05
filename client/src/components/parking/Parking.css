@@ -1,42 +1,14 @@
-.route-preview,
 .parking-grid,
 .spot-details {
-  @apply rounded-[28px] border border-white/60 bg-white/75 p-6 shadow-soft backdrop-blur-xl;
+  @apply rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
 }
 
-.route-preview {
-  @apply relative overflow-hidden;
-}
-
-.route-preview-header {
-  @apply mb-5;
-}
-
-.route-preview-eyebrow,
 .spot-details-eyebrow {
   @apply text-sm font-semibold uppercase tracking-[0.24em] text-primary;
 }
 
-.route-preview-title,
 .spot-details-title {
   @apply mt-2 font-display text-2xl font-semibold;
-}
-
-.route-preview-map {
-  @apply relative h-52 rounded-[28px];
-  background: linear-gradient(180deg, #fff 0%, #ffeef1 100%);
-}
-
-.route-preview-track {
-  @apply absolute left-6 top-10 h-3/4 w-[calc(100%-3rem)] rounded-[36px] border-[10px] border-dashed border-[#7ba8f2]/70;
-}
-
-.route-preview-car {
-  @apply absolute left-10 top-8 h-10 w-16 rounded-[18px] bg-primary shadow-soft;
-}
-
-.route-preview-target {
-  @apply absolute bottom-5 right-6 rounded-2xl bg-accent/30 px-4 py-3 text-sm font-semibold text-ink;
 }
 
 .parking-grid-list {
@@ -44,7 +16,7 @@
 }
 
 .parking-spot {
-  @apply relative min-h-28 rounded-[24px] border border-white/50 p-4 text-left shadow-panel transition hover:-translate-y-1;
+  @apply relative min-h-28 rounded-[28px] border border-white/50 p-4 text-left shadow-panel transition hover:-translate-y-1;
 }
 
 .parking-grid-preview .parking-spot {

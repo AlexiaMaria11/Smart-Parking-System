@@ -2,9 +2,9 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
+  CarFront,
   CheckCircle2,
   MapPinned,
-  QrCode,
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -57,19 +57,21 @@ export function LandingPage() {
               Find, reserve and manage parking — without the hassle.
             </h1>
             <p className="landing-description">
-              A modern smart parking system for drivers, staff and
-              administrators. See live spot availability, reserve your space in
-              seconds, and let the system handle the rest.
+              A modern smart parking system for clients and administrators. See
+              live spot availability, reserve your space in seconds, and let the
+              system handle the rest.
             </p>
             <div className="landing-actions">
               <Link to="/register">
-                <Button className="gap-2">
+                <Button className="landing-cta-button gap-2">
                   Find a Spot
                   <ArrowRight size={16} />
                 </Button>
               </Link>
               <Link to="/login">
-                <Button variant="secondary">Login</Button>
+                <Button variant="secondary" className="landing-cta-button">
+                  Login
+                </Button>
               </Link>
             </div>
           </motion.div>
@@ -82,7 +84,7 @@ export function LandingPage() {
           <SectionHeading
             eyebrow="Features"
             title="Everything you need for smarter parking"
-            description="Live availability, quick reservations and role-based tools keep the whole parking flow clear from arrival to admin reporting."
+            description="Live availability, quick reservations and role-based tools keep the whole parking flow clear from client bookings to admin reporting."
             align="center"
           />
           <div className="landing-feature-grid">
@@ -110,10 +112,7 @@ export function LandingPage() {
             align="center"
           />
           <div className="landing-live-map-grid">
-            <ParkingGrid
-              spots={parkingSpots}
-              isInteractive={false}
-            />
+            <ParkingGrid spots={parkingSpots} isInteractive={false} />
           </div>
         </div>
       </section>
@@ -123,7 +122,7 @@ export function LandingPage() {
           <SectionHeading
             eyebrow="How it works"
             title="Find, reserve, park"
-            description="A simple flow for drivers, backed by real-time data and clean access control."
+            description="A simple flow for clients, backed by real-time data and clean access control."
             align="center"
           />
           <div className="landing-how-grid">
@@ -150,13 +149,13 @@ export function LandingPage() {
             </div>
             <div className="landing-card">
               <div className="landing-step-icon">
-                <QrCode size={20} />
+                <CarFront size={20} />
               </div>
               <p className="landing-step-label">Step 3 - Park</p>
-              <h3 className="landing-card-title">Show your QR code</h3>
+              <h3 className="landing-card-title">Arrive and park</h3>
               <p className="landing-card-description">
-                Head to your spot. Show your QR code at the entrance and you're
-                good to go.
+                Head to your reserved spot and keep track of the reservation
+                status from your client dashboard.
               </p>
             </div>
           </div>
@@ -164,24 +163,22 @@ export function LandingPage() {
       </section>
 
       <section className="landing-footer-cta">
-        <div className="app-shell">
-          <div className="landing-footer-cta-inner">
-            <div>
-              <h2 className="landing-footer-title">
-                Ready to stop searching for a parking spot?
-              </h2>
-              <p className="landing-footer-description">
-                Join hundreds of drivers and administrators already using Park
-                Smart System.
-              </p>
-            </div>
-            <Link to="/register">
-              <Button className="gap-2">
-                Create your free account
-                <ArrowRight size={16} />
-              </Button>
-            </Link>
+        <div className="landing-footer-cta-inner">
+          <div>
+            <h2 className="landing-footer-title">
+              Ready to stop searching for a parking spot?
+            </h2>
+            <p className="landing-footer-description">
+              Join hundreds of clients and administrators already using Park
+              Smart System.
+            </p>
           </div>
+          <Link to="/register">
+            <Button variant="secondary" className="landing-cta-button gap-2">
+              Create your free account
+              <ArrowRight size={16} />
+            </Button>
+          </Link>
         </div>
       </section>
     </div>

@@ -10,7 +10,7 @@ export function AdminHardwarePage() {
         title="Hardware"
         description="Sensors, barriers and cameras are organized with health, uptime and maintenance actions."
       />
-      <div className="admin-list">
+      <div className="admin-hardware-grid">
         {devices.map((device) => (
           <DeviceCard key={device.id} device={device} />
         ))}

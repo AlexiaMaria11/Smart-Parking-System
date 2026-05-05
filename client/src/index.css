@@ -57,7 +57,7 @@
   }
 
   .app-shell {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[1500px] pl-4 pr-5 sm:pl-5 sm:pr-7 lg:pl-2 lg:pr-8 xl:pl-3 xl:pr-10;
   }
 
   .section-title {

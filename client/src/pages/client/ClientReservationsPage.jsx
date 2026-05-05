@@ -14,13 +14,17 @@ export function ClientReservationsPage() {
       />
       <div className="client-reservations">
         {sections.map((section) => (
-          <section key={section}>
+          <section key={section} className="client-reservation-section">
             <h2 className="client-reservation-heading">{section}</h2>
             <div className="client-reservation-list">
               {reservations
                 .filter((item) => item.section === section)
                 .map((reservation) => (
-                  <ReservationCard key={reservation.id} reservation={reservation} />
+                  <ReservationCard
+                    key={reservation.id}
+                    reservation={reservation}
+                    showStatus={false}
+                  />
                 ))}
             </div>
           </section>

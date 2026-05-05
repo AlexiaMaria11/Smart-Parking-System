@@ -10,6 +10,10 @@
   @apply space-y-5;
 }
 
+.admin-hardware-grid {
+  @apply grid gap-5 lg:grid-cols-2;
+}
+
 .admin-stack {
   @apply space-y-6;
 }

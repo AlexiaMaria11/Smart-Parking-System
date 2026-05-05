@@ -14,7 +14,12 @@ const io = new Server(server, {
 });
 
 registerParkingSocket(io);
-startMqttService(io);
+
+if (env.mqttEnabled) {
+  startMqttService(io);
+} else {
+  console.log("MQTT disabled by MQTT_ENABLED=false");
+}
 
 server.listen(env.port, () => {
   console.log(`Smart Parking API running on http://localhost:${env.port}`);

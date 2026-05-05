@@ -1,43 +1,111 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Button } from "../common/Button";
 import "./Dashboard.css";
 
-export function ChartPanel({ series }) {
-  const [mode, setMode] = useState("revenue");
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
+
+function prettifyMode(mode) {
+  return mode
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
+export function ChartPanel({
+  series,
+  labels = {},
+  titles = {},
+  buttonLabels = {},
+  formatters = {},
+  eyebrow = "Insights",
+  defaultMode,
+}) {
+  const modes = Object.keys(series);
+  const [mode, setMode] = useState(defaultMode || modes[0]);
   const values = series[mode];
-  const max = Math.max(...values);
+  const chartLabels =
+    labels[mode] || values.map((_, index) => `${8 + index}:00`);
+  const formatValue = formatters[mode] || ((value) => value);
+
+  const data = {
+    labels: chartLabels,
+    datasets: [
+      {
+        label: titles[mode] || prettifyMode(mode),
+        data: values,
+        backgroundColor: "#BD3952",
+        borderColor: "#BD3952",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: mode === "occupancy" ? 100 : undefined,
+        ticks: {
+          callback: function (value) {
+            return formatValue(value);
+          },
+        },
+      },
+      x: {
+        ticks: {
+          maxRotation: 0,
+        },
+      },
+    },
+  };
 
   return (
     <div className="chart-panel">
       <div className="panel-header-spread">
         <div>
-          <p className="panel-eyebrow">Insights</p>
-          <h3 className="panel-title">
-            {mode === "revenue" ? "Revenue over time" : "Parking occupancy by hour"}
-          </h3>
+          <p className="panel-eyebrow">{eyebrow}</p>
+          <h3 className="panel-title">{titles[mode] || prettifyMode(mode)}</h3>
         </div>
         <div className="chart-actions">
-          <Button variant={mode === "revenue" ? "primary" : "secondary"} onClick={() => setMode("revenue")}>
-            Revenue
-          </Button>
-          <Button variant={mode === "occupancy" ? "primary" : "secondary"} onClick={() => setMode("occupancy")}>
-            Occupancy
-          </Button>
+          {modes.map((item) => (
+            <Button
+              key={item}
+              variant={mode === item ? "primary" : "secondary"}
+              onClick={() => setMode(item)}
+            >
+              {buttonLabels[item] || prettifyMode(item)}
+            </Button>
+          ))}
         </div>
       </div>
-      <div className="chart-bars">
-        {values.map((value, index) => (
-          <div key={`${mode}-${index}`} className="chart-column">
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: `${(value / max) * 100}%` }}
-              transition={{ delay: index * 0.05, duration: 0.5 }}
-              className="chart-bar"
-            />
-            <span className="chart-label">{`${8 + index}:00`}</span>
-          </div>
-        ))}
+      <div className="chart-container">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );
