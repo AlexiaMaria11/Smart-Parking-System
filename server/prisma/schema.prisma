@@ -79,10 +79,7 @@ model Vehicle {
 model ParkingSpot {
   id            String          @id @default(cuid())
   code          String          @unique
-  level         String?
-  zone          String?
   isAvailable   Boolean         @default(true)
-  isDefective   Boolean         @default(false)
   pricePerHour  Decimal         @db.Decimal(10, 2)
   reservations  Reservation[]
   events        ParkingEvent[]
@@ -121,7 +118,7 @@ model Payment {
 
 model HardwareDevice {
   id            String          @id @default(cuid())
-  name          String
+  name          String          @unique
   type          HardwareType
   status        HardwareStatus  @default(ONLINE)
   location      String?
