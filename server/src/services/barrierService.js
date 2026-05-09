@@ -1,15 +1,24 @@
 import { prisma } from "../config/db.js";
-import { publishCommand } from "./mqttService.js";
+import { publishCommand, publishDisplayUpdate } from "./mqttService.js";
+
+export async function broadcastDisplayState() {
+  const [freeSpots, cheapest] = await Promise.all([
+    prisma.parkingSpot.count({ where: { isAvailable: true } }),
+    prisma.parkingSpot.findFirst({ orderBy: { pricePerHour: "asc" } }),
+  ]);
+  publishDisplayUpdate({
+    freeSpots,
+    pricePerHour: cheapest ? Number(cheapest.pricePerHour) : 0,
+  });
+}
 
 export async function handleBarrierTrigger({ barrierId, payload, io }) {
   const { plate = "UNKNOWN" } = payload;
   const isEntry = barrierId === "bariera_intrare";
 
-  // deschide bariera
   publishCommand(barrierId, "OPEN");
 
   if (isEntry) {
-    // marcheaza primul loc disponibil ca ocupat
     const spot = await prisma.parkingSpot.findFirst({
       where: { isAvailable: true },
       orderBy: { code: "asc" },
@@ -31,13 +40,14 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
       });
 
       io.emit("parking:spot:updated", { code: spot.code, isAvailable: false });
+      await broadcastDisplayState();
       console.log(`[ENTRY] ${plate} -> loc ${spot.code}`);
     } else {
       publishCommand(barrierId, "DENY");
+      await broadcastDisplayState();
       console.log(`[ENTRY] ${plate} -> parcare plina, bariera blocata`);
     }
   } else {
-    // iesire: elibereaza locul dupa numarul de inmatriculare
     const event = await prisma.parkingEvent.findFirst({
       where: { licensePlate: plate, type: "ENTRY" },
       orderBy: { createdAt: "desc" },
@@ -62,6 +72,7 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
         code: event.parkingSpotId,
         isAvailable: true,
       });
+      await broadcastDisplayState();
       console.log(`[EXIT] ${plate} -> loc eliberat`);
     }
   }
