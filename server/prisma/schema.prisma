@@ -47,6 +47,12 @@ enum ParkingEventType {
   RESERVATION_CANCELLED
   CONFLICT
   NO_SHOW
+  DENIED
+}
+
+enum EntryType {
+  RESERVATION
+  WALKIN
 }
 
 model User {
@@ -131,6 +137,7 @@ model HardwareDevice {
 model ParkingEvent {
   id            String            @id @default(cuid())
   type          ParkingEventType
+  entryType     EntryType?
   description   String
   licensePlate  String?
   parkingSpot   ParkingSpot?      @relation(fields: [parkingSpotId], references: [id])

@@ -9,6 +9,7 @@ import hardwareRoutes from "./hardwareRoutes.js";
 import reportsRoutes from "./reportsRoutes.js";
 import notificationsRoutes from "./notificationsRoutes.js";
 import parkingEventsRoutes from "./parkingEventsRoutes.js";
+import anprRoutes from "./anprRoutes.js";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/hardware", hardwareRoutes);
 router.use("/reports", reportsRoutes);
 router.use("/notifications", notificationsRoutes);
 router.use("/parking-events", parkingEventsRoutes);
+router.use("/anpr", anprRoutes);
 
 export default router;
