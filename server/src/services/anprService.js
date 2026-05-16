@@ -66,13 +66,13 @@ export const anprService = {
     await prisma.parkingEvent.create({
       data: {
         type: "ENTRY",
-        entryType: "WALKIN",
+        entryType: "WALK_IN",
         description: `${plate} a intrat fara rezervare — loc ${freeSpot.code}`,
         licensePlate: plate,
         parkingSpotId: freeSpot.id,
       },
     });
 
-    return { allowed: true, type: "WALKIN", spot: freeSpot.code };
+    return { allowed: true, type: "WALK_IN", spot: freeSpot.code };
   },
 };
