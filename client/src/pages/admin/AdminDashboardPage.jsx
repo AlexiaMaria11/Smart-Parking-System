@@ -4,7 +4,7 @@ import {
   adminChartTitles,
   adminStats,
   recentActivities,
-} from "../../mockData";
+} from "../../constants/mock.data";
 import { StatCard } from "../../components/common/StatCard";
 import { ChartPanel } from "../../components/dashboard/ChartPanel";
 import { ActivityFeed } from "../../components/dashboard/ActivityFeed";

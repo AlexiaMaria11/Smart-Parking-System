@@ -1,4 +1,4 @@
-import { reservations } from "../../mockData";
+import { reservations } from "../../constants/mock.data";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ReservationCard } from "../../components/reservations/ReservationCard";
 import "./ClientPages.css";

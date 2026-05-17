@@ -1,4 +1,4 @@
-import { reports } from "../../mockData";
+import { reports } from "../../constants/mock.data";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ReportCard } from "../../components/reports/ReportCard";
 import "./AdminPages.css";

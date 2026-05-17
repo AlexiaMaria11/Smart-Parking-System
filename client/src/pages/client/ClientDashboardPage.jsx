@@ -5,7 +5,7 @@ import {
   clientStats,
   notifications,
   reservations,
-} from "../../mockData";
+} from "../../constants/mock.data";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { StatCard } from "../../components/common/StatCard";
 import { ChartPanel } from "../../components/dashboard/ChartPanel";

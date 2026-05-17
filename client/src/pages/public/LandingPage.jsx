@@ -12,7 +12,7 @@ import parkingHero from "../../assets/parking-hero.png";
 import { Navbar } from "../../components/layout/Navbar";
 import { Button } from "../../components/common/Button";
 import { SectionHeading } from "../../components/common/SectionHeading";
-import { landingFeatures, parkingSpots } from "../../mockData";
+import { landingFeatures, parkingSpots } from "../../constants/mock.data";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import "./LandingPage.css";
 

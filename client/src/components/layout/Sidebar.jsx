@@ -11,11 +11,11 @@ import {
   Map,
   Settings,
   User,
-  WalletCards
+  WalletCards,
 } from "lucide-react";
 import { cn } from "../../utils/formatters";
 import { useAuth } from "../../hooks/useAuth";
-import { menuByRole } from "../../mockData";
+import { menuByRole } from "../../constants/mock.data";
 import "./Layout.css";
 
 const menuIcons = {
@@ -27,7 +27,7 @@ const menuIcons = {
   Reservations: WalletCards,
   Vehicles: Gauge,
   Profile: User,
-  Settings
+  Settings,
 };
 
 export function Sidebar({ role, isCollapsed = false, onToggle }) {
@@ -48,7 +48,10 @@ export function Sidebar({ role, isCollapsed = false, onToggle }) {
   return (
     <aside className={cn("sidebar", isCollapsed && "sidebar-collapsed")}>
       <div className="sidebar-header">
-        <Link to={role === "ADMIN" ? "/admin" : "/client"} className="sidebar-brand">
+        <Link
+          to={role === "ADMIN" ? "/admin" : "/client"}
+          className="sidebar-brand"
+        >
           <span className="sidebar-brand-mark">P</span>
           {!isCollapsed && <span className="sidebar-brand-text">Park</span>}
         </Link>
@@ -73,7 +76,9 @@ export function Sidebar({ role, isCollapsed = false, onToggle }) {
               to={item.path}
               className={cn(
                 "sidebar-link",
-                isActiveRoute(item.path) ? "sidebar-link-active" : "sidebar-link-idle"
+                isActiveRoute(item.path)
+                  ? "sidebar-link-active"
+                  : "sidebar-link-idle",
               )}
               title={isCollapsed ? item.label : undefined}
             >

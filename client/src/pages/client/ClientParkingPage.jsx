@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { parkingSpots } from "../../mockData";
+import { parkingSpots } from "../../constants/mock.data";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import { SpotDetailsCard } from "../../components/parking/SpotDetailsCard";

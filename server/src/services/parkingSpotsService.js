@@ -1,7 +1,7 @@
 import { parkingSpotsRepository } from "../repositories/parkingSpotsRepository.js";
 
 export const parkingSpotsService = {
-  getParkingSpots() {
-    return parkingSpotsRepository.findAll();
-  }
+  async getParkingSpots() {
+    return await parkingSpotsRepository.findAll();
+  },
 };

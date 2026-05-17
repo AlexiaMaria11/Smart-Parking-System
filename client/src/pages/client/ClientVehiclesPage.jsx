@@ -1,4 +1,4 @@
-import { vehicles } from "../../mockData";
+import { vehicles } from "../../constants/mock.data";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { VehicleCard } from "../../components/vehicles/VehicleCard";
 import { Button } from "../../components/common/Button";

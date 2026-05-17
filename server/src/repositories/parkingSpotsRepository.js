@@ -1,7 +1,9 @@
-import { mockParkingSpots } from "../utils/mockData.js";
+import { prisma } from "../lib/prisma.js";
 
 export const parkingSpotsRepository = {
-  findAll() {
-    return mockParkingSpots;
-  }
+  async findAll() {
+    return await prisma.parkingSpot.findMany({
+      orderBy: { code: "asc" },
+    });
+  },
 };

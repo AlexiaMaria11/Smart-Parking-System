@@ -12,7 +12,7 @@
 }
 
 .parking-grid-list {
-  @apply grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4;
+  @apply grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-32;
 }
 
 .parking-spot {
@@ -24,27 +24,27 @@
 }
 
 .parking-spot-available {
-  @apply bg-[#b7de7d] text-[#46652d];
+  @apply bg-[#8ecf55] text-[#1a3d08];
 }
 
 .parking-spot-occupied {
-  @apply bg-[#f7a9b4] text-[#8b3648];
+  @apply bg-[#ef7088] text-[#5e1225];
 }
 
 .parking-spot-reserved {
-  @apply bg-[#f5e787] text-[#816c0a];
+  @apply bg-[#f5cc2a] text-[#4a3800];
 }
 
 .parking-spot-selected {
-  @apply bg-[#d9a7cf] text-[#703f67];
+  @apply bg-[#b87db2] text-[#3d1039];
 }
 
 .parking-spot-defective {
-  @apply bg-slate-300 text-slate-700;
+  @apply bg-[#8fa8b3] text-[#1e3038];
 }
 
 .parking-spot-active {
-  @apply ring-4 ring-white/70;
+  @apply ring-4 ring-white ring-offset-2 ring-offset-transparent;
 }
 
 .parking-spot-top {
