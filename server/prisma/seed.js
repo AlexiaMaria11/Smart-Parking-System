@@ -3,8 +3,6 @@ import {
   Role,
   ReservationStatus,
   PaymentStatus,
-  HardwareType,
-  HardwareStatus,
   ParkingEventType,
   EntryType,
 } from "@prisma/client";
@@ -217,12 +215,10 @@ async function main() {
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
       },
       {
-        type: ParkingEventType.WALK_IN,
-        entryType: EntryType.WALK_IN,
+        type: ParkingEventType.DENIED,
         description: "Parcare plina — acces refuzat",
         licensePlate: "CJ-10-ZZZ",
         createdAt: new Date(now.getTime() - 45 * 60 * 1000),
-        type: ParkingEventType.DENIED,
       },
     ],
   });
