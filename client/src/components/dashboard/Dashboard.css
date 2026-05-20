@@ -26,7 +26,7 @@
 }
 
 .activity-item {
-  @apply flex items-start justify-between gap-4 py-4;
+  @apply flex items-start justify-between gap-4 py-4 rounded-xl px-2 transition-colors;
 }
 
 .activity-type {
@@ -78,7 +78,18 @@
 }
 
 .notification-item {
-  @apply py-4;
+  @apply flex items-start gap-3 py-4 rounded-xl px-2 transition-colors;
+}
+
+.notification-dot {
+  @apply mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary;
+  box-shadow: 0 0 0 3px rgba(189, 57, 82, 0.18);
+  animation: dot-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(189, 57, 82, 0.18); }
+  50% { box-shadow: 0 0 0 6px rgba(189, 57, 82, 0.06); }
 }
 
 .notification-title {

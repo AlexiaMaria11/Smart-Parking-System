@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import re
+import json
 import cv2
 import httpx
 import paho.mqtt.client as mqtt
@@ -92,11 +93,15 @@ def on_button_pressed():
         result = resp.json().get("data", {})
         if result.get("allowed"):
             print(f"[BACKEND] ACCES PERMIS — loc {result.get('spot')} ({result.get('type')})")
+            mqtt_client.publish(MQTT_TOPIC, json.dumps({"action": "OPEN"}))
+            print(f"[MQTT] Publicat pe {MQTT_TOPIC}: OPEN")
             if locuri_ramase > 0:
                 locuri_ramase -= 1
                 update_display(locuri_ramase)
         else:
             print(f"[BACKEND] ACCES REFUZAT — {result.get('reason', 'necunoscut')}")
+            mqtt_client.publish(MQTT_TOPIC, json.dumps({"action": "DENY"}))
+            print(f"[MQTT] Publicat pe {MQTT_TOPIC}: DENY")
     except Exception as e:
         print(f"[BACKEND] Eroare comunicare: {e}")
 

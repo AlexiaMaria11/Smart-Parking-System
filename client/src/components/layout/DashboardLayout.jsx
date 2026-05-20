@@ -23,6 +23,11 @@ export function DashboardLayout() {
           onToggle={() => setIsSidebarCollapsed((current) => !current)}
         />
         <main className="dashboard-layout-main">
+          <div className="dashboard-bg-blobs" aria-hidden="true">
+            <div className="blob blob-1" />
+            <div className="blob blob-2" />
+            <div className="blob blob-3" />
+          </div>
           <Outlet />
         </main>
       </div>

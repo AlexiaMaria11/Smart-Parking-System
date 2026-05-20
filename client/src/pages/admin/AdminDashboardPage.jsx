@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
   adminChartLabels,
   adminChartSeries,
@@ -11,19 +12,45 @@ import { ActivityFeed } from "../../components/dashboard/ActivityFeed";
 import { PageHeader } from "../../components/layout/PageHeader";
 import "./AdminPages.css";
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+};
+
+const panelVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 220, damping: 22 } },
+};
+
 export function AdminDashboardPage() {
   return (
-    <div>
+    <motion.div variants={pageVariants} initial="hidden" animate="visible">
       <PageHeader
         title="Admin Dashboard"
         description="Track occupancy, revenue and important parking activity from a central operational view."
       />
-      <div className="admin-stats-grid">
-        {adminStats.map((item) => (
-          <StatCard key={item.label} {...item} />
+      <motion.div
+        className="admin-stats-grid"
+        variants={gridVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {adminStats.map((item, i) => (
+          <StatCard key={item.label} {...item} delay={i * 0.06} />
         ))}
-      </div>
-      <div className="admin-dashboard-grid">
+      </motion.div>
+      <motion.div
+        className="admin-dashboard-grid"
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.35 }}
+      >
         <ChartPanel
           series={adminChartSeries}
           labels={adminChartLabels}
@@ -35,7 +62,7 @@ export function AdminDashboardPage() {
           }}
         />
         <ActivityFeed items={recentActivities} />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

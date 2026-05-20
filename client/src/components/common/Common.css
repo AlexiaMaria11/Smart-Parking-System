@@ -67,7 +67,20 @@
 }
 
 .stat-card {
-  @apply rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
+  @apply relative overflow-hidden rounded-[28px] border border-white/60 bg-white/70 p-5 backdrop-blur-xl;
+  transition: box-shadow 0.3s ease;
+}
+
+.stat-card-accent {
+  @apply absolute left-0 right-0 top-0 h-[3px] rounded-t-[28px];
+  background: linear-gradient(90deg, #BD3952 0%, #f4a4aa 50%, #BD3952 100%);
+  background-size: 200% 100%;
+  animation: accent-shimmer 3s linear infinite;
+}
+
+@keyframes accent-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 .stat-card-content {
@@ -82,10 +95,32 @@
   @apply mt-3 font-display text-3xl font-semibold;
 }
 
+.stat-card-trend-row {
+  @apply mt-2 flex items-center gap-1 text-sm text-muted;
+}
+
+.stat-trend-up {
+  @apply text-[#608d38];
+}
+
+.stat-trend-up .stat-card-trend {
+  @apply text-[#608d38];
+}
+
+.stat-trend-down {
+  @apply text-[#b84d62];
+}
+
+.stat-trend-down .stat-card-trend {
+  @apply text-[#b84d62];
+}
+
 .stat-card-trend {
-  @apply mt-2 text-sm text-muted;
+  @apply text-sm text-muted;
 }
 
 .stat-card-icon {
-  @apply flex h-9 w-9 items-center justify-center rounded-lg bg-blush text-primary;
+  @apply flex h-9 w-9 items-center justify-center rounded-lg text-primary;
+  background: linear-gradient(135deg, #fff4f4 0%, #ffd6dc 100%);
+  box-shadow: 0 2px 8px rgba(189, 57, 82, 0.15);
 }

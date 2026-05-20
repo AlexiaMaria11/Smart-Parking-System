@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -49,9 +50,11 @@ export function ChartPanel({
       {
         label: titles[mode] || prettifyMode(mode),
         data: values,
-        backgroundColor: "#BD3952",
+        backgroundColor: "rgba(189, 57, 82, 0.75)",
         borderColor: "#BD3952",
         borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false,
       },
     ],
   };
@@ -59,28 +62,21 @@ export function ChartPanel({
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: { duration: 600, easing: "easeInOutQuart" },
     plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: false,
-      },
+      legend: { display: false },
+      title: { display: false },
     },
     scales: {
       y: {
         beginAtZero: true,
         max: mode === "occupancy" ? 100 : undefined,
-        ticks: {
-          callback: function (value) {
-            return formatValue(value);
-          },
-        },
+        grid: { color: "rgba(189, 57, 82, 0.06)" },
+        ticks: { callback: (value) => formatValue(value) },
       },
       x: {
-        ticks: {
-          maxRotation: 0,
-        },
+        grid: { display: false },
+        ticks: { maxRotation: 0 },
       },
     },
   };
@@ -104,9 +100,18 @@ export function ChartPanel({
           ))}
         </div>
       </div>
-      <div className="chart-container">
-        <Bar data={data} options={options} />
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={mode}
+          className="chart-container"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          <Bar data={data} options={options} />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

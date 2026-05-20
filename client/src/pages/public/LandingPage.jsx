@@ -16,6 +16,24 @@ import { landingFeatures, parkingSpots } from "../../constants/mock.data";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import "./LandingPage.css";
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 220, damping: 22, delay: i * 0.1 },
+  }),
+};
+
+const stepVariants = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: (i) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", stiffness: 200, damping: 20, delay: i * 0.12 },
+  }),
+};
+
 export function LandingPage() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -27,11 +45,7 @@ export function LandingPage() {
     [0, 1],
     ["blur(0px)", "blur(10px)"],
   );
-  const heroY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, -150], // se duce în sus
-  );
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -150]);
 
   return (
     <div>
@@ -49,19 +63,39 @@ export function LandingPage() {
         <div className="landing-hero-overlay" />
         <div className="landing-hero-content">
           <motion.div style={{ y: heroY }} className="landing-hero-copy">
-            <div className="landing-eyebrow">
+            <motion.div
+              className="landing-eyebrow"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
               <Sparkles size={16} />
               Smart parking — powered by real-time data
-            </div>
-            <h1 className="landing-title">
+            </motion.div>
+            <motion.h1
+              className="landing-title"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" }}
+            >
               Find, reserve and manage parking — without the hassle.
-            </h1>
-            <p className="landing-description">
+            </motion.h1>
+            <motion.p
+              className="landing-description"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+            >
               A modern smart parking system for clients and administrators. See
               live spot availability, reserve your space in seconds, and let the
               system handle the rest.
-            </p>
-            <div className="landing-actions">
+            </motion.p>
+            <motion.div
+              className="landing-actions"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.32, ease: "easeOut" }}
+            >
               <Link to="/register">
                 <Button className="landing-cta-button gap-2">
                   Find a Spot
@@ -73,7 +107,7 @@ export function LandingPage() {
                   Login
                 </Button>
               </Link>
-            </div>
+            </motion.div>
           </motion.div>
           <div className="landing-hero-spacer" aria-hidden="true" />
         </div>
@@ -88,16 +122,27 @@ export function LandingPage() {
             align="center"
           />
           <div className="landing-feature-grid">
-            {landingFeatures.map((feature) => (
-              <div key={feature.title} className="landing-card">
-                <div className="landing-feature-icon">
+            {landingFeatures.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                className="landing-card"
+                custom={i}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
+                whileHover={{ y: -6, boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)" }}
+              >
+                <motion.div
+                  className="landing-feature-icon"
+                  whileHover={{ scale: 1.12, rotate: 6 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                >
                   <feature.icon size={18} />
-                </div>
+                </motion.div>
                 <h3 className="landing-card-title">{feature.title}</h3>
-                <p className="landing-card-description">
-                  {feature.description}
-                </p>
-              </div>
+                <p className="landing-card-description">{feature.description}</p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -111,9 +156,15 @@ export function LandingPage() {
             description="Check live spot states, compare prices and inspect restrictions from the public map preview."
             align="center"
           />
-          <div className="landing-live-map-grid">
+          <motion.div
+            className="landing-live-map-grid"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             <ParkingGrid spots={parkingSpots} isInteractive={false} />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -126,45 +177,60 @@ export function LandingPage() {
             align="center"
           />
           <div className="landing-how-grid">
-            <div className="landing-card">
-              <div className="landing-step-icon">
-                <MapPinned size={20} />
-              </div>
-              <p className="landing-step-label">Step 1 - Find</p>
-              <h3 className="landing-card-title">Open the live map</h3>
-              <p className="landing-card-description">
-                See which spots are available right now, updated in real time.
-              </p>
-            </div>
-            <div className="landing-card">
-              <div className="landing-step-icon">
-                <CheckCircle2 size={20} />
-              </div>
-              <p className="landing-step-label">Step 2 - Reserve</p>
-              <h3 className="landing-card-title">Confirm your booking</h3>
-              <p className="landing-card-description">
-                Select your spot, choose your time window, and confirm your
-                reservation instantly.
-              </p>
-            </div>
-            <div className="landing-card">
-              <div className="landing-step-icon">
-                <CarFront size={20} />
-              </div>
-              <p className="landing-step-label">Step 3 - Park</p>
-              <h3 className="landing-card-title">Arrive and park</h3>
-              <p className="landing-card-description">
-                Head to your reserved spot and keep track of the reservation
-                status from your client dashboard.
-              </p>
-            </div>
+            {[
+              {
+                icon: MapPinned,
+                step: "Step 1 - Find",
+                title: "Open the live map",
+                description: "See which spots are available right now, updated in real time.",
+              },
+              {
+                icon: CheckCircle2,
+                step: "Step 2 - Reserve",
+                title: "Confirm your booking",
+                description: "Select your spot, choose your time window, and confirm your reservation instantly.",
+              },
+              {
+                icon: CarFront,
+                step: "Step 3 - Park",
+                title: "Arrive and park",
+                description: "Head to your reserved spot and keep track of the reservation status from your client dashboard.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                className="landing-card"
+                custom={i}
+                variants={stepVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
+                whileHover={{ y: -6, boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)" }}
+              >
+                <motion.div
+                  className="landing-step-icon"
+                  whileHover={{ scale: 1.12 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <item.icon size={20} />
+                </motion.div>
+                <p className="landing-step-label">{item.step}</p>
+                <h3 className="landing-card-title">{item.title}</h3>
+                <p className="landing-card-description">{item.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="landing-footer-cta">
         <div className="landing-footer-cta-inner">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             <h2 className="landing-footer-title">
               Ready to stop searching for a parking spot?
             </h2>
@@ -172,13 +238,20 @@ export function LandingPage() {
               Join hundreds of clients and administrators already using Park
               Smart System.
             </p>
-          </div>
-          <Link to="/register">
-            <Button variant="secondary" className="landing-cta-button gap-2">
-              Create your free account
-              <ArrowRight size={16} />
-            </Button>
-          </Link>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          >
+            <Link to="/register">
+              <Button variant="secondary" className="landing-cta-button gap-2">
+                Create your free account
+                <ArrowRight size={16} />
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
     </div>

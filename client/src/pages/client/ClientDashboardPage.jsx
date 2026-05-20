@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
   clientChartLabels,
   clientChartSeries,
@@ -14,6 +15,21 @@ import { Button } from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
 import "./ClientPages.css";
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+};
+
+const panelVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 220, damping: 22 } },
+};
+
 export function ClientDashboardPage() {
   const { user } = useAuth();
   const activeReservation = reservations.find(
@@ -21,7 +37,7 @@ export function ClientDashboardPage() {
   );
 
   return (
-    <div>
+    <motion.div variants={pageVariants} initial="hidden" animate="visible">
       <PageHeader
         title={`Welcome, ${user?.name || "Client"}`}
         description="Manage your current reservation, vehicles and parking activity from your dashboard."
@@ -33,12 +49,23 @@ export function ClientDashboardPage() {
           </div>
         }
       />
-      <div className="client-stats-grid">
-        {clientStats.map((item) => (
-          <StatCard key={item.label} {...item} />
+      <motion.div
+        className="client-stats-grid"
+        variants={gridVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {clientStats.map((item, i) => (
+          <StatCard key={item.label} {...item} delay={i * 0.06} />
         ))}
-      </div>
-      <div className="client-dashboard-grid">
+      </motion.div>
+      <motion.div
+        className="client-dashboard-grid"
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.35 }}
+      >
         <div className="client-stack">
           <div className="client-status-panel">
             <p className="client-panel-eyebrow">Current reservation status</p>
@@ -91,7 +118,7 @@ export function ClientDashboardPage() {
           />
         </div>
         <NotificationPanel notifications={notifications} />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

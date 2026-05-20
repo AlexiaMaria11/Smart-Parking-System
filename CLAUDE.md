@@ -22,6 +22,7 @@ npm run dev:server   # Express backend → http://localhost:4000
 ```
 
 For the AI service (Python):
+
 ```bash
 cd ai-service
 pip install -r requirements.txt
@@ -30,13 +31,13 @@ uvicorn app:app --reload
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
+| Layer    | Technology                                                              |
+| -------- | ----------------------------------------------------------------------- |
 | Frontend | React 18, Vite, Tailwind CSS, Framer Motion, Chart.js, Socket.IO Client |
-| Backend | Node.js, Express 4, Prisma 5, Socket.IO, MQTT, jsonwebtoken, bcryptjs |
-| Database | PostgreSQL (via Prisma ORM) |
-| AI/OCR | FastAPI + OpenCV + Pytesseract (placeholder); RapidOCR + ONNX (on RPi5) |
-| Hardware | Raspberry Pi 5, GPIO, MQTT broker |
+| Backend  | Node.js, Express 4, Prisma 5, Socket.IO, MQTT, jsonwebtoken, bcryptjs   |
+| Database | PostgreSQL (via Prisma ORM)                                             |
+| AI/OCR   | FastAPI + OpenCV + Pytesseract (placeholder); RapidOCR + ONNX (on RPi5) |
+| Hardware | Raspberry Pi 5, GPIO, MQTT broker                                       |
 
 ## Backend (`server/`)
 
@@ -58,19 +59,19 @@ server/src/
 
 ### API Routes
 
-| Route | Auth required | Purpose |
-|-------|--------------|---------|
-| `POST /api/auth/login` | No | User login — returns JWT + user |
-| `GET /api/users` | Yes | List all users (admin) |
-| `GET /api/vehicles` | Yes | Vehicles for logged-in user |
-| `GET /api/parking-spots` | No | Parking spot listings |
-| `GET /api/reservations` | Yes | Reservations (client sees own, admin sees all) |
-| `GET /api/payments` | Yes | Payments (client sees own, admin sees all) |
-| `GET /api/hardware` | Yes | Hardware status |
-| `GET /api/reports` | Yes | Analytics (real DB aggregates) |
-| `GET /api/notifications` | Yes | Notifications for logged-in user |
-| `GET /api/parking-events` | Yes | Audit log (last 100) |
-| `POST /api/anpr/detect` | No | License plate detection — called by RPi hardware |
+| Route                     | Auth required | Purpose                                          |
+| ------------------------- | ------------- | ------------------------------------------------ |
+| `POST /api/auth/login`    | No            | User login — returns JWT + user                  |
+| `GET /api/users`          | Yes           | List all users (admin)                           |
+| `GET /api/vehicles`       | Yes           | Vehicles for logged-in user                      |
+| `GET /api/parking-spots`  | No            | Parking spot listings                            |
+| `GET /api/reservations`   | Yes           | Reservations (client sees own, admin sees all)   |
+| `GET /api/payments`       | Yes           | Payments (client sees own, admin sees all)       |
+| `GET /api/hardware`       | Yes           | Hardware status                                  |
+| `GET /api/reports`        | Yes           | Analytics (real DB aggregates)                   |
+| `GET /api/notifications`  | Yes           | Notifications for logged-in user                 |
+| `GET /api/parking-events` | Yes           | Audit log (last 100)                             |
+| `POST /api/anpr/detect`   | No            | License plate detection — called by RPi hardware |
 
 ### Authentication (JWT)
 
@@ -91,18 +92,6 @@ The `io` Socket.IO instance is available throughout the app via `req.app.get('io
 - **`authService`** — bcrypt password verification + JWT signing
 - **`reportsService`** — Real-time DB aggregates: occupancy %, avg duration, daily/monthly revenue, issue counts
 
-### Environment Variables (`server/.env`)
-
-```
-PORT=4000
-CLIENT_URL=http://localhost:5173
-DATABASE_URL="postgresql://postgres:ale11@localhost:5432/smartparking"
-JWT_SECRET=smart-parking-secret-key-2026
-JWT_EXPIRES_IN=7d
-MQTT_ENABLED=false
-MQTT_BROKER_URL=mqtt://localhost:1883
-```
-
 ## Database (`server/prisma/`)
 
 Schema file: `server/prisma/schema.prisma`
@@ -110,15 +99,15 @@ Seed script: `server/prisma/seed.js`
 
 ### Models
 
-| Model | Purpose |
-|-------|---------|
-| `User` | Users with ADMIN/CLIENT roles |
-| `Vehicle` | License plates linked to users |
-| `ParkingSpot` | Spot inventory with hourly pricing and `isAvailable` flag |
-| `Reservation` | Time-based spot reservations |
-| `Payment` | Payment records per reservation |
-| `ParkingEvent` | Audit log of all parking activity |
-| `Notification` | User-facing notifications |
+| Model          | Purpose                                                   |
+| -------------- | --------------------------------------------------------- |
+| `User`         | Users with ADMIN/CLIENT roles                             |
+| `Vehicle`      | License plates linked to users                            |
+| `ParkingSpot`  | Spot inventory with hourly pricing and `isAvailable` flag |
+| `Reservation`  | Time-based spot reservations                              |
+| `Payment`      | Payment records per reservation                           |
+| `ParkingEvent` | Audit log of all parking activity                         |
+| `Notification` | User-facing notifications                                 |
 
 ### Key Enums
 
@@ -131,12 +120,12 @@ Seed script: `server/prisma/seed.js`
 
 Run with `npx prisma db seed` from `server/`:
 
-| Email | Password | Role |
-|-------|----------|------|
-| admin@parking.com | admin123 | ADMIN |
-| client@parking.com | client123 | CLIENT |
-| ion@example.com | password123 | CLIENT |
-| maria@example.com | password123 | CLIENT |
+| Email              | Password    | Role   |
+| ------------------ | ----------- | ------ |
+| admin@parking.com  | admin123    | ADMIN  |
+| client@parking.com | client123   | CLIENT |
+| ion@example.com    | password123 | CLIENT |
+| maria@example.com  | password123 | CLIENT |
 
 Seed also creates: 8 parking spots (A1–A4, B5–B8), 8 reservations, 8 payments, 9 parking events, 6 notifications.
 
@@ -177,11 +166,13 @@ client/src/
 ### Real-time Updates (Socket.IO)
 
 On connection, server emits `parking:bootstrap` with real spot data from DB:
+
 ```js
 { spots: [...], availableSpots: N, occupiedSpots: M }
 ```
 
 Live events emitted by backend after ANPR entry:
+
 - `parking:spot:updated` — `{ id, code, isAvailable }` — broadcast to all clients
 
 ## Hardware Integration
@@ -195,18 +186,31 @@ Live events emitted by backend after ANPR entry:
    - Has valid reservation → marks `ACTIVE`, sets spot unavailable, emits Socket.IO, publishes MQTT `OPEN`
    - Walk-in, spot available → sets spot unavailable, emits Socket.IO, publishes MQTT `OPEN`
    - Parking full → publishes MQTT `DENY`, creates `DENIED` event
-5. RPi updates local LCD display **only if** response is `{ allowed: true }`
+5. RPi receives HTTP response and:
+   - `allowed: true` → publishes MQTT `OPEN` on `parking/bariera_intrare/command` + actualizează display LCD
+   - `allowed: false` → publishes MQTT `DENY` on `parking/bariera_intrare/command`
 
-The RPi does **not** publish MQTT directly — barrier control is entirely decided by the backend.
+Both the backend (`anprService`) and the RPi (`entry_trigger.py`) publish on the command topic — the RPi publishes **after** receiving the HTTP response, acting as confirmation to the physical barrier.
+
+### MQTT Setup (two-machine workflow)
+
+MQTT is disabled by default so development without hardware works out of the box.
+
+| Machine | `.env` setting | Notes |
+| ------- | -------------- | ----- |
+| Development (no hardware) | `MQTT_ENABLED=false` | Server starts normally, `publishCommand` is a no-op |
+| Hardware testing (colega) | `MQTT_ENABLED=true` | Requires Mosquitto broker running locally on port 1883 |
+
+The `.env` file is in `.gitignore` — each machine keeps its own value.
 
 ### MQTT Topics
 
-| Topic | Direction | Purpose |
-|-------|-----------|---------|
-| `parking/bariera_intrare/trigger` | RPi → Server | Entry barrier trigger (barrierService path) |
-| `parking/bariera_iesire/trigger` | RPi → Server | Exit barrier trigger |
-| `parking/bariera_intrare/command` | Server → Barrier | OPEN / DENY command |
-| `parking/display` | Server → RPi | Display update (free spots, pricing) |
+| Topic                             | Direction            | Purpose                                     |
+| --------------------------------- | -------------------- | ------------------------------------------- |
+| `parking/bariera_intrare/trigger` | RPi → Server         | Entry barrier trigger (barrierService path) |
+| `parking/bariera_iesire/trigger`  | RPi → Server         | Exit barrier trigger                        |
+| `parking/bariera_intrare/command` | Server / RPi → Barrier | OPEN / DENY command (both backend and RPi publish here) |
+| `parking/display`                 | Server → RPi         | Display update (free spots, pricing)        |
 
 ### AI Service (`ai-service/`)
 

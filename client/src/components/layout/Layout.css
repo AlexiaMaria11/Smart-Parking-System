@@ -69,6 +69,55 @@
   @apply min-h-screen;
 }
 
+.dashboard-bg-blobs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.blob-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(244, 164, 170, 0.35), rgba(189, 57, 82, 0.18));
+  top: -80px;
+  right: 80px;
+  animation: blob-float 9s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(221, 184, 209, 0.3), rgba(189, 57, 82, 0.12));
+  bottom: 60px;
+  left: 120px;
+  animation: blob-float 11s ease-in-out infinite reverse;
+  animation-delay: -4s;
+}
+
+.blob-3 {
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(244, 164, 170, 0.2), rgba(120, 194, 183, 0.12));
+  top: 40%;
+  right: 30%;
+  animation: blob-float 13s ease-in-out infinite;
+  animation-delay: -7s;
+}
+
+@keyframes blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(28px, -32px) scale(1.06); }
+  66% { transform: translate(-22px, 18px) scale(0.96); }
+}
+
 .dashboard-layout-grid {
   @apply grid min-h-screen gap-0 transition-[grid-template-columns] duration-300 ease-out;
   grid-template-columns: 220px minmax(0, 1fr);
