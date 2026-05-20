@@ -13,6 +13,7 @@ const io = new Server(server, {
   }
 });
 
+app.set("io", io);
 registerParkingSocket(io);
 
 if (env.mqttEnabled) {

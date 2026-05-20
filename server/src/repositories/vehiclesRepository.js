@@ -1,7 +1,10 @@
-import { mockVehicles } from "../utils/mockData.js";
+import { prisma } from "../config/db.js";
 
 export const vehiclesRepository = {
   findAllByUser(userId) {
-    return mockVehicles.filter((vehicle) => vehicle.userId === userId);
+    return prisma.vehicle.findMany({
+      where: { ownerId: userId },
+      orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }]
+    });
   }
 };

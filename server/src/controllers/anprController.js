@@ -6,7 +6,8 @@ export const anprController = {
     const { plate } = req.body;
     if (!plate) return res.status(400).json({ error: "plate required" });
 
-    const result = await anprService.detectEntry(plate.toUpperCase().trim());
+    const io = req.app.get("io");
+    const result = await anprService.detectEntry(plate.toUpperCase().trim(), io);
     return ok(res, result);
   },
 };

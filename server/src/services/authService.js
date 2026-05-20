@@ -1,15 +1,25 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { authRepository } from "../repositories/authRepository.js";
+import { env } from "../config/env.js";
 
 export const authService = {
-  login({ email }) {
-    const user = authRepository.findByEmail(email);
-    if (!user) {
-      throw new Error("User not found");
-    }
+  async login({ email, password }) {
+    const user = await authRepository.findByEmail(email);
+    if (!user) throw new Error("Invalid credentials");
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) throw new Error("Invalid credentials");
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      env.jwtSecret,
+      { expiresIn: env.jwtExpiresIn }
+    );
 
     return {
-      user,
-      token: `mock-token-${user.role.toLowerCase()}`
+      token,
+      user: { id: user.id, name: user.name, email: user.email, role: user.role }
     };
   }
 };

@@ -2,7 +2,7 @@ import { prisma } from "../config/db.js";
 import { publishCommand } from "./mqttService.js";
 
 export const anprService = {
-  async detectEntry(plate) {
+  async detectEntry(plate, io) {
     const now = new Date();
 
     // Case 1 — known vehicle with a valid upcoming reservation (allow 15 min early)
@@ -29,6 +29,10 @@ export const anprService = {
             where: { id: reservation.id },
             data: { status: "ACTIVE" },
           }),
+          prisma.parkingSpot.update({
+            where: { id: reservation.parkingSpotId },
+            data: { isAvailable: false },
+          }),
           prisma.parkingEvent.create({
             data: {
               type: "ENTRY",
@@ -39,6 +43,12 @@ export const anprService = {
             },
           }),
         ]);
+
+        io?.emit("parking:spot:updated", {
+          id: reservation.parkingSpotId,
+          code: reservation.parkingSpot.code,
+          isAvailable: false,
+        });
 
         return { allowed: true, type: "RESERVATION", spot: reservation.parkingSpot.code };
       }
@@ -51,6 +61,8 @@ export const anprService = {
     });
 
     if (!freeSpot) {
+      publishCommand("bariera_intrare", "DENY");
+
       await prisma.parkingEvent.create({
         data: {
           type: "DENIED",
@@ -63,14 +75,26 @@ export const anprService = {
 
     publishCommand("bariera_intrare", "OPEN");
 
-    await prisma.parkingEvent.create({
-      data: {
-        type: "ENTRY",
-        entryType: "WALK_IN",
-        description: `${plate} a intrat fara rezervare — loc ${freeSpot.code}`,
-        licensePlate: plate,
-        parkingSpotId: freeSpot.id,
-      },
+    await Promise.all([
+      prisma.parkingSpot.update({
+        where: { id: freeSpot.id },
+        data: { isAvailable: false },
+      }),
+      prisma.parkingEvent.create({
+        data: {
+          type: "ENTRY",
+          entryType: "WALK_IN",
+          description: `${plate} a intrat fara rezervare — loc ${freeSpot.code}`,
+          licensePlate: plate,
+          parkingSpotId: freeSpot.id,
+        },
+      }),
+    ]);
+
+    io?.emit("parking:spot:updated", {
+      id: freeSpot.id,
+      code: freeSpot.code,
+      isAvailable: false,
     });
 
     return { allowed: true, type: "WALK_IN", spot: freeSpot.code };

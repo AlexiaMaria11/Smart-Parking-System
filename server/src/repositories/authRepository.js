@@ -1,7 +1,7 @@
-import { mockUsers } from "../utils/mockData.js";
+import { prisma } from "../config/db.js";
 
 export const authRepository = {
   findByEmail(email) {
-    return mockUsers.find((user) => user.email === email);
+    return prisma.user.findUnique({ where: { email } });
   }
 };

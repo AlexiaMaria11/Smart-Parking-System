@@ -1,7 +1,7 @@
 import { vehiclesRepository } from "../repositories/vehiclesRepository.js";
 
 export const vehiclesService = {
-  getVehiclesByUser(userId = "u2") {
+  getVehiclesByUser(userId) {
     return vehiclesRepository.findAllByUser(userId);
   }
 };

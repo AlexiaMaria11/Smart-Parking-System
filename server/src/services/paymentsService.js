@@ -1,7 +1,7 @@
 import { paymentsRepository } from "../repositories/paymentsRepository.js";
 
 export const paymentsService = {
-  getPayments() {
-    return paymentsRepository.findAll();
+  getPayments({ userId, role } = {}) {
+    return paymentsRepository.findAll({ userId, role });
   }
 };

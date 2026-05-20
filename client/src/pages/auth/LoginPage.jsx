@@ -16,10 +16,10 @@ export function LoginPage() {
     password: "client123"
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const user = login(form);
+      const user = await login(form);
       navigate(user.role === ROLES.ADMIN ? ROUTE_PATHS.ADMIN_DASHBOARD : ROUTE_PATHS.CLIENT_DASHBOARD);
     } catch (submitError) {
       setError(submitError.message);

@@ -2,7 +2,12 @@ import { notificationsService } from "../services/notificationsService.js";
 import { ok } from "../utils/response.js";
 
 export const notificationsController = {
-  list(req, res) {
-    return ok(res, notificationsService.getNotificationsByUser(req.user?.id));
+  async list(req, res, next) {
+    try {
+      const data = await notificationsService.getNotificationsByUser(req.user.id);
+      return ok(res, data);
+    } catch (error) {
+      return next(error);
+    }
   }
 };

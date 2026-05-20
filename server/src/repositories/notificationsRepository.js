@@ -1,7 +1,10 @@
-import { mockNotifications } from "../utils/mockData.js";
+import { prisma } from "../config/db.js";
 
 export const notificationsRepository = {
   findAllByUser(userId) {
-    return mockNotifications.filter((notification) => notification.userId === userId);
+    return prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" }
+    });
   }
 };

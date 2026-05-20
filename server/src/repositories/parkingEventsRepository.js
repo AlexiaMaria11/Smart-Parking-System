@@ -1,7 +1,13 @@
-import { mockParkingEvents } from "../utils/mockData.js";
+import { prisma } from "../config/db.js";
 
 export const parkingEventsRepository = {
   findAll() {
-    return mockParkingEvents;
+    return prisma.parkingEvent.findMany({
+      include: {
+        parkingSpot: { select: { id: true, code: true } }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100
+    });
   }
 };

@@ -1,14 +1,10 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import { ROLES } from "../constants/roles";
 
 export const AuthContext = createContext(null);
 
 const STORAGE_KEY = "smart-parking-user";
-
-const defaultUsers = {
-  "admin@parking.com": { role: ROLES.ADMIN, name: "Admin User", password: "admin123" },
-  "client@parking.com": { role: ROLES.CLIENT, name: "Client User", password: "client123" }
-};
+const TOKEN_KEY = "smart-parking-token";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -20,16 +16,23 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = ({ email, password }) => {
-    const match = defaultUsers[email];
-    if (!match || match.password !== password) {
-      throw new Error("Invalid credentials");
+  const login = async ({ email, password }) => {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || "Invalid credentials");
     }
 
-    const nextUser = { email, role: match.role, name: match.name };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
-    setUser(nextUser);
-    return nextUser;
+    const { data } = await res.json();
+    localStorage.setItem(TOKEN_KEY, data.token);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
+    setUser(data.user);
+    return data.user;
   };
 
   const register = ({ name, email, role }) => {
@@ -41,6 +44,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     setUser(null);
   };
 

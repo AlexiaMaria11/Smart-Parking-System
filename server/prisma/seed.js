@@ -7,6 +7,7 @@ import {
   EntryType,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -21,8 +22,10 @@ async function main() {
   await prisma.parkingSpot.deleteMany();
   await prisma.user.deleteMany();
 
-  // ─── Password ──────────────────────────────────────────────────────────────
-  const passwordHash = await bcrypt.hash("password123", 10);
+  // ─── Passwords ─────────────────────────────────────────────────────────────
+  const adminHash = await bcrypt.hash("admin123", 10);
+  const clientHash = await bcrypt.hash("client123", 10);
+  const defaultHash = await bcrypt.hash("password123", 10);
 
   // ─── Admin ─────────────────────────────────────────────────────────────────
   const admin = await prisma.user.create({
@@ -30,18 +33,28 @@ async function main() {
       name: "Admin User",
       email: "admin@parking.com",
       phone: "+40700000000",
-      passwordHash,
+      passwordHash: adminHash,
       role: Role.ADMIN,
     },
   });
 
   // ─── Clients ───────────────────────────────────────────────────────────────
+  const clientDemo = await prisma.user.create({
+    data: {
+      name: "Client User",
+      email: "client@parking.com",
+      phone: "+40733333333",
+      passwordHash: clientHash,
+      role: Role.CLIENT,
+    },
+  });
+
   const user1 = await prisma.user.create({
     data: {
       name: "Ion Popescu",
       email: "ion@example.com",
       phone: "+40711111111",
-      passwordHash,
+      passwordHash: defaultHash,
       role: Role.CLIENT,
     },
   });
@@ -51,12 +64,21 @@ async function main() {
       name: "Maria Ionescu",
       email: "maria@example.com",
       phone: "+40722222222",
-      passwordHash,
+      passwordHash: defaultHash,
       role: Role.CLIENT,
     },
   });
 
   // ─── Vehicles ──────────────────────────────────────────────────────────────
+  const vehicleDemo = await prisma.vehicle.create({
+    data: {
+      label: "Ford Focus",
+      licensePlate: "B-11-CLI",
+      isDefault: true,
+      ownerId: clientDemo.id,
+    },
+  });
+
   const vehicle1 = await prisma.vehicle.create({
     data: {
       label: "Dacia Logan",
@@ -87,21 +109,57 @@ async function main() {
   // ─── Parking Spots ─────────────────────────────────────────────────────────
   const spotsData = [
     { code: "A1", isAvailable: false, pricePerHour: 5.0 },
-    { code: "A2", isAvailable: true, pricePerHour: 5.0 },
-    { code: "A3", isAvailable: true, pricePerHour: 4.0 },
+    { code: "A2", isAvailable: true,  pricePerHour: 5.0 },
+    { code: "A3", isAvailable: true,  pricePerHour: 4.0 },
     { code: "A4", isAvailable: false, pricePerHour: 4.0 },
     { code: "B5", isAvailable: false, pricePerHour: 4.0 },
-    { code: "B6", isAvailable: true, pricePerHour: 5.0 },
+    { code: "B6", isAvailable: true,  pricePerHour: 5.0 },
     { code: "B7", isAvailable: false, pricePerHour: 5.0 },
-    { code: "B8", isAvailable: true, pricePerHour: 6.0 },
+    { code: "B8", isAvailable: true,  pricePerHour: 6.0 },
   ];
 
   const spots = await Promise.all(
-    spotsData.map((spot) => prisma.parkingSpot.create({ data: spot })),
+    spotsData.map((spot) => prisma.parkingSpot.create({ data: spot }))
   );
 
   // ─── Reservations ──────────────────────────────────────────────────────────
   const now = new Date();
+
+  const resDemo1 = await prisma.reservation.create({
+    data: {
+      userId: clientDemo.id,
+      vehicleId: vehicleDemo.id,
+      parkingSpotId: spots[4].id, // B5
+      status: ReservationStatus.ACTIVE,
+      startTime: new Date(now.getTime() - 45 * 60 * 1000),
+      endTime:   new Date(now.getTime() + 75 * 60 * 1000),
+      totalCost: 7.5,
+    },
+  });
+
+  const resDemo2 = await prisma.reservation.create({
+    data: {
+      userId: clientDemo.id,
+      vehicleId: vehicleDemo.id,
+      parkingSpotId: spots[1].id, // A2
+      status: ReservationStatus.UPCOMING,
+      startTime: new Date(now.getTime() + 3 * 60 * 60 * 1000),
+      endTime:   new Date(now.getTime() + 5 * 60 * 60 * 1000),
+      totalCost: 10.0,
+    },
+  });
+
+  const resDemo3 = await prisma.reservation.create({
+    data: {
+      userId: clientDemo.id,
+      vehicleId: vehicleDemo.id,
+      parkingSpotId: spots[2].id, // A3
+      status: ReservationStatus.COMPLETED,
+      startTime: new Date(now.getTime() - 10 * 60 * 60 * 1000),
+      endTime:   new Date(now.getTime() -  8 * 60 * 60 * 1000),
+      totalCost: 8.0,
+    },
+  });
 
   const reservation1 = await prisma.reservation.create({
     data: {
@@ -109,8 +167,8 @@ async function main() {
       vehicleId: vehicle1.id,
       parkingSpotId: spots[0].id, // A1
       status: ReservationStatus.ACTIVE,
-      startTime: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1h ago
-      endTime: new Date(now.getTime() + 1 * 60 * 60 * 1000), // 1h from now
+      startTime: new Date(now.getTime() - 1 * 60 * 60 * 1000),
+      endTime:   new Date(now.getTime() + 1 * 60 * 60 * 1000),
       totalCost: 10.0,
     },
   });
@@ -121,8 +179,8 @@ async function main() {
       vehicleId: vehicle2.id,
       parkingSpotId: spots[3].id, // A4
       status: ReservationStatus.UPCOMING,
-      startTime: new Date(now.getTime() + 2 * 60 * 60 * 1000), // 2h from now
-      endTime: new Date(now.getTime() + 4 * 60 * 60 * 1000), // 4h from now
+      startTime: new Date(now.getTime() + 2 * 60 * 60 * 1000),
+      endTime:   new Date(now.getTime() + 4 * 60 * 60 * 1000),
       totalCost: 8.0,
     },
   });
@@ -133,8 +191,8 @@ async function main() {
       vehicleId: vehicle3.id,
       parkingSpotId: spots[6].id, // B7
       status: ReservationStatus.ACTIVE,
-      startTime: new Date(now.getTime() - 30 * 60 * 1000), // 30min ago
-      endTime: new Date(now.getTime() + 90 * 60 * 1000), // 1.5h from now
+      startTime: new Date(now.getTime() - 30 * 60 * 1000),
+      endTime:   new Date(now.getTime() + 90 * 60 * 1000),
       totalCost: 12.5,
     },
   });
@@ -143,41 +201,37 @@ async function main() {
     data: {
       userId: user2.id,
       vehicleId: vehicle3.id,
-      parkingSpotId: spots[4].id, // B5
+      parkingSpotId: spots[5].id, // B6 (completed — spot freed)
       status: ReservationStatus.COMPLETED,
       startTime: new Date(now.getTime() - 5 * 60 * 60 * 1000),
-      endTime: new Date(now.getTime() - 3 * 60 * 60 * 1000),
-      totalCost: 8.0,
+      endTime:   new Date(now.getTime() - 3 * 60 * 60 * 1000),
+      totalCost: 10.0,
+    },
+  });
+
+  const reservation5 = await prisma.reservation.create({
+    data: {
+      userId: user1.id,
+      vehicleId: vehicle1.id,
+      parkingSpotId: spots[7].id, // B8 (completed — spot freed)
+      status: ReservationStatus.COMPLETED,
+      startTime: new Date(now.getTime() - 8 * 60 * 60 * 1000),
+      endTime:   new Date(now.getTime() - 6 * 60 * 60 * 1000),
+      totalCost: 12.0,
     },
   });
 
   // ─── Payments ──────────────────────────────────────────────────────────────
   await prisma.payment.createMany({
     data: [
-      {
-        reservationId: reservation1.id,
-        userId: user1.id,
-        amount: 10.0,
-        status: PaymentStatus.PAID,
-      },
-      {
-        reservationId: reservation2.id,
-        userId: user1.id,
-        amount: 8.0,
-        status: PaymentStatus.PENDING,
-      },
-      {
-        reservationId: reservation3.id,
-        userId: user2.id,
-        amount: 12.5,
-        status: PaymentStatus.PAID,
-      },
-      {
-        reservationId: reservation4.id,
-        userId: user2.id,
-        amount: 8.0,
-        status: PaymentStatus.PAID,
-      },
+      { reservationId: resDemo1.id,    userId: clientDemo.id, amount: 7.5,  status: PaymentStatus.PAID },
+      { reservationId: resDemo2.id,    userId: clientDemo.id, amount: 10.0, status: PaymentStatus.PENDING },
+      { reservationId: resDemo3.id,    userId: clientDemo.id, amount: 8.0,  status: PaymentStatus.PAID },
+      { reservationId: reservation1.id, userId: user1.id,     amount: 10.0, status: PaymentStatus.PAID },
+      { reservationId: reservation2.id, userId: user1.id,     amount: 8.0,  status: PaymentStatus.PENDING },
+      { reservationId: reservation3.id, userId: user2.id,     amount: 12.5, status: PaymentStatus.PAID },
+      { reservationId: reservation4.id, userId: user2.id,     amount: 10.0, status: PaymentStatus.PAID },
+      { reservationId: reservation5.id, userId: user1.id,     amount: 12.0, status: PaymentStatus.PAID },
     ],
   });
 
@@ -188,16 +242,17 @@ async function main() {
         type: ParkingEventType.ENTRY,
         entryType: EntryType.RESERVATION,
         description: "Vehicul intrat pe baza rezervării",
+        licensePlate: "B-11-CLI",
+        parkingSpotId: spots[4].id,
+        createdAt: new Date(now.getTime() - 45 * 60 * 1000),
+      },
+      {
+        type: ParkingEventType.ENTRY,
+        entryType: EntryType.RESERVATION,
+        description: "Vehicul intrat pe baza rezervării",
         licensePlate: "TM-01-ABC",
         parkingSpotId: spots[0].id,
         createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000),
-      },
-      {
-        type: ParkingEventType.RESERVATION_CREATED,
-        description: "Rezervare nouă creată pentru A4",
-        licensePlate: "TM-02-XYZ",
-        parkingSpotId: spots[3].id,
-        createdAt: new Date(now.getTime() - 20 * 60 * 1000),
       },
       {
         type: ParkingEventType.ENTRY,
@@ -208,11 +263,32 @@ async function main() {
         createdAt: new Date(now.getTime() - 30 * 60 * 1000),
       },
       {
+        type: ParkingEventType.RESERVATION_CREATED,
+        description: "Rezervare nouă creată pentru A4",
+        licensePlate: "TM-02-XYZ",
+        parkingSpotId: spots[3].id,
+        createdAt: new Date(now.getTime() - 20 * 60 * 1000),
+      },
+      {
+        type: ParkingEventType.RESERVATION_CREATED,
+        description: "Rezervare nouă creată pentru A2",
+        licensePlate: "B-11-CLI",
+        parkingSpotId: spots[1].id,
+        createdAt: new Date(now.getTime() - 15 * 60 * 1000),
+      },
+      {
         type: ParkingEventType.EXIT,
         description: "Vehicul ieșit după rezervare completată",
         licensePlate: "B-99-MAR",
-        parkingSpotId: spots[4].id,
+        parkingSpotId: spots[5].id,
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
+      },
+      {
+        type: ParkingEventType.EXIT,
+        description: "Vehicul ieșit după rezervare completată",
+        licensePlate: "TM-01-ABC",
+        parkingSpotId: spots[7].id,
+        createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1000),
       },
       {
         type: ParkingEventType.DENIED,
@@ -220,12 +296,31 @@ async function main() {
         licensePlate: "CJ-10-ZZZ",
         createdAt: new Date(now.getTime() - 45 * 60 * 1000),
       },
+      {
+        type: ParkingEventType.CONFLICT,
+        description: "Ocupare neașteptată detecată la B8",
+        licensePlate: "IS-55-XYZ",
+        parkingSpotId: spots[7].id,
+        createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+      },
     ],
   });
 
   // ─── Notifications ─────────────────────────────────────────────────────────
   await prisma.notification.createMany({
     data: [
+      {
+        title: "Rezervare confirmată",
+        message: "Rezervarea ta pentru locul B5 a fost confirmată.",
+        userId: clientDemo.id,
+        isRead: true,
+      },
+      {
+        title: "Rezervare upcoming",
+        message: "Ai o rezervare pentru locul A2 în 3 ore.",
+        userId: clientDemo.id,
+        isRead: false,
+      },
       {
         title: "Rezervare confirmată",
         message: "Rezervarea ta pentru locul A1 a fost confirmată.",
@@ -246,7 +341,7 @@ async function main() {
       },
       {
         title: "Rezervare finalizată",
-        message: "Rezervarea ta pentru locul B5 a fost finalizată. Mulțumim!",
+        message: "Rezervarea ta pentru locul B6 a fost finalizată. Mulțumim!",
         userId: user2.id,
         isRead: true,
       },
@@ -254,11 +349,12 @@ async function main() {
   });
 
   console.log("✅ Seed complet!");
-  console.log(`   👤 Admin:   admin@parking.com`);
-  console.log(`   👤 User 1:  ion@example.com`);
-  console.log(`   👤 User 2:  maria@example.com`);
-  console.log(`   🔑 Parolă:  password123`);
-  console.log(`   🅿️  Locuri:  8 (A1-A4, B5-B8)`);
+  console.log("   👤 admin@parking.com   / admin123");
+  console.log("   👤 client@parking.com  / client123");
+  console.log("   👤 ion@example.com     / password123");
+  console.log("   👤 maria@example.com   / password123");
+  console.log("   🅿️  Locuri: 8 (A1-A4, B5-B8)");
+  console.log("   📋 Rezervări: 8 | 💳 Plăți: 8 | 🔔 Notificări: 6 | 📝 Evenimente: 9");
 }
 
 main()
