@@ -12,8 +12,9 @@ import parkingHero from "../../assets/parking-hero.png";
 import { Navbar } from "../../components/layout/Navbar";
 import { Button } from "../../components/common/Button";
 import { SectionHeading } from "../../components/common/SectionHeading";
-import { landingFeatures, parkingSpots } from "../../constants/mock.data";
+import { landingFeatures } from "../../constants/mock.data";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
+import { useLiveSpots } from "../../hooks/useLiveSpots";
 import "./LandingPage.css";
 
 const cardVariants = {
@@ -30,11 +31,18 @@ const stepVariants = {
   visible: (i) => ({
     opacity: 1,
     scale: 1,
-    transition: { type: "spring", stiffness: 200, damping: 20, delay: i * 0.12 },
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 20,
+      delay: i * 0.12,
+    },
   }),
 };
 
 export function LandingPage() {
+  const { spots: liveSpots, availableSpots, occupiedSpots, isLoading } = useLiveSpots();
+
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -63,15 +71,6 @@ export function LandingPage() {
         <div className="landing-hero-overlay" />
         <div className="landing-hero-content">
           <motion.div style={{ y: heroY }} className="landing-hero-copy">
-            <motion.div
-              className="landing-eyebrow"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <Sparkles size={16} />
-              Smart parking — powered by real-time data
-            </motion.div>
             <motion.h1
               className="landing-title"
               initial={{ opacity: 0, y: 24 }}
@@ -131,7 +130,10 @@ export function LandingPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: "-60px" }}
-                whileHover={{ y: -6, boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)" }}
+                whileHover={{
+                  y: -6,
+                  boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)",
+                }}
               >
                 <motion.div
                   className="landing-feature-icon"
@@ -141,7 +143,9 @@ export function LandingPage() {
                   <feature.icon size={18} />
                 </motion.div>
                 <h3 className="landing-card-title">{feature.title}</h3>
-                <p className="landing-card-description">{feature.description}</p>
+                <p className="landing-card-description">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -153,7 +157,11 @@ export function LandingPage() {
           <SectionHeading
             eyebrow="Live map"
             title="See parking availability before you arrive"
-            description="Check live spot states, compare prices and inspect restrictions from the public map preview."
+            description={
+              isLoading
+                ? "Connecting to live feed..."
+                : `${availableSpots} free · ${occupiedSpots} occupied · live updates`
+            }
             align="center"
           />
           <motion.div
@@ -163,7 +171,7 @@ export function LandingPage() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <ParkingGrid spots={parkingSpots} isInteractive={false} />
+            <ParkingGrid spots={liveSpots} isInteractive={false} />
           </motion.div>
         </div>
       </section>
@@ -182,19 +190,22 @@ export function LandingPage() {
                 icon: MapPinned,
                 step: "Step 1 - Find",
                 title: "Open the live map",
-                description: "See which spots are available right now, updated in real time.",
+                description:
+                  "See which spots are available right now, updated in real time.",
               },
               {
                 icon: CheckCircle2,
                 step: "Step 2 - Reserve",
                 title: "Confirm your booking",
-                description: "Select your spot, choose your time window, and confirm your reservation instantly.",
+                description:
+                  "Select your spot, choose your time window, and confirm your reservation instantly.",
               },
               {
                 icon: CarFront,
                 step: "Step 3 - Park",
                 title: "Arrive and park",
-                description: "Head to your reserved spot and keep track of the reservation status from your client dashboard.",
+                description:
+                  "Head to your reserved spot and keep track of the reservation status from your client dashboard.",
               },
             ].map((item, i) => (
               <motion.div
@@ -205,7 +216,10 @@ export function LandingPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: "-60px" }}
-                whileHover={{ y: -6, boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)" }}
+                whileHover={{
+                  y: -6,
+                  boxShadow: "0 24px 48px rgba(189, 57, 82, 0.14)",
+                }}
               >
                 <motion.div
                   className="landing-step-icon"

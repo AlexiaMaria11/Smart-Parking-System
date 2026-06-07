@@ -1,19 +1,29 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { parkingSpots } from "../../constants/mock.data";
+import { useLiveSpots } from "../../hooks/useLiveSpots";
+import { useApi } from "../../hooks/useApi";
 import { PageHeader } from "../../components/layout/PageHeader";
 import { ParkingGrid } from "../../components/parking/ParkingGrid";
 import { SpotDetailsCard } from "../../components/parking/SpotDetailsCard";
 import "./ClientPages.css";
 
 export function ClientParkingPage() {
+  const { spots, availableSpots, isLoading } = useLiveSpots();
+  const { data: vehiclesRaw } = useApi("/vehicles");
+  const vehicles = (vehiclesRaw ?? []).map((v) => ({
+    id: v.id,
+    label: v.label,
+    licensePlate: v.licensePlate,
+    isDefault: v.isDefault,
+  }));
+
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
   const [overviewPosition, setOverviewPosition] = useState({ x: 0, y: 0 });
+
   const closeSpotOverview = () => setIsOverviewOpen(false);
   const openSpotOverview = (spot, event) => {
     const rect = event.currentTarget.getBoundingClientRect();
-
     setSelectedSpot(spot);
     setIsOverviewOpen(true);
     setOverviewPosition({
@@ -22,19 +32,16 @@ export function ClientParkingPage() {
     });
   };
 
+  const description = isLoading
+    ? "Connecting to live map..."
+    : `${availableSpots} spots available right now`;
+
   return (
     <div>
-      <PageHeader
-        title="Parking Spots"
-        description="Explore the map, inspect pricing and restrictions, then reserve the best parking spot for your schedule."
-      />
+      <PageHeader title="Parking Spots" description={description} />
       <div className="client-parking-grid">
         <div className="client-stack">
-          <ParkingGrid
-            spots={parkingSpots}
-            selectedSpot={selectedSpot}
-            onSelect={openSpotOverview}
-          />
+          <ParkingGrid spots={spots} selectedSpot={selectedSpot} onSelect={openSpotOverview} />
         </div>
       </div>
       <AnimatePresence onExitComplete={() => setSelectedSpot(null)}>
@@ -44,19 +51,10 @@ export function ClientParkingPage() {
             className="spot-details-overlay-root"
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(2px)" }}
-            exit={{
-              opacity: 0,
-              backdropFilter: "blur(0px)",
-              transition: { delay: 0.18, duration: 0.22, ease: "easeOut" },
-            }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)", transition: { delay: 0.18, duration: 0.22, ease: "easeOut" } }}
             transition={{ duration: 0.24, ease: "easeOut" }}
           >
-            <button
-              type="button"
-              className="spot-details-dismiss-layer"
-              onClick={closeSpotOverview}
-              aria-label="Close spot overview"
-            />
+            <button type="button" className="spot-details-dismiss-layer" onClick={closeSpotOverview} aria-label="Close spot overview" />
             <motion.div
               className="spot-details-popover"
               role="dialog"
@@ -64,14 +62,13 @@ export function ClientParkingPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.16, ease: "easeOut" }}
-              style={{
-                "--spot-popover-x": `${overviewPosition.x}px`,
-                "--spot-popover-y": `${overviewPosition.y}px`,
-              }}
+              style={{ "--spot-popover-x": `${overviewPosition.x}px`, "--spot-popover-y": `${overviewPosition.y}px` }}
             >
               <SpotDetailsCard
                 spot={selectedSpot}
                 onClose={closeSpotOverview}
+                vehicles={vehicles}
+                onActionDone={closeSpotOverview}
               />
             </motion.div>
           </motion.div>
