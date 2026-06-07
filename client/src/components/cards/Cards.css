@@ -44,6 +44,18 @@
   @apply flex flex-wrap gap-3;
 }
 
+.entity-card-edit-form {
+  @apply mt-2 flex flex-col gap-2;
+}
+
+.entity-card-input {
+  @apply rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20;
+}
+
+.entity-card-error {
+  @apply mt-1 text-xs text-red-500;
+}
+
 .report-card-value {
   @apply mt-4 font-display text-3xl font-semibold;
 }

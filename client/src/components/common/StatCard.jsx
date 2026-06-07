@@ -15,6 +15,7 @@ export function StatCard({ label, value, trend, icon: Icon, delay = 0 }) {
         y: -6,
         boxShadow: "0 28px 52px rgba(189, 57, 82, 0.2), 0 8px 16px rgba(189, 57, 82, 0.1)",
       }}
+      style={{ boxShadow: "0 0px 0px rgba(189, 57, 82, 0), 0 0px 0px rgba(189, 57, 82, 0)" }}
       transition={{ type: "spring", stiffness: 260, damping: 22, delay }}
     >
       <div className="stat-card-accent" />
