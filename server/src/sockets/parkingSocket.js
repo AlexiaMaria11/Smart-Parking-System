@@ -1,13 +1,9 @@
-import { prisma } from "../config/db.js";
+import { getAllFormattedSpots } from "../utils/spotFormatter.js";
 
 export function registerParkingSocket(io) {
   io.on("connection", async (socket) => {
     try {
-      const spots = await prisma.parkingSpot.findMany({
-        orderBy: { code: "asc" },
-        select: { id: true, code: true, isAvailable: true, pricePerHour: true },
-      });
-
+      const spots = await getAllFormattedSpots();
       const availableSpots = spots.filter((s) => s.isAvailable).length;
 
       socket.emit("parking:bootstrap", {
