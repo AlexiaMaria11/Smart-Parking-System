@@ -37,6 +37,7 @@ model Vehicle {
 model ParkingSpot {
   id           String         @id @default(cuid())
   code         String         @unique
+  spotType     EntryType      @default(WALK_IN)
   isAvailable  Boolean        @default(true)
   pricePerHour Decimal        @db.Decimal(10, 2)
   createdAt    DateTime       @default(now())
@@ -125,4 +126,5 @@ enum ParkingEventType {
 enum EntryType {
   RESERVATION
   WALK_IN
+  CONFLICT
 }
