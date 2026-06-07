@@ -7,14 +7,17 @@ export async function apiRequest(path, options = {}) {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {})
+      ...(options.headers || {}),
     },
-    ...options
+    ...options,
   });
 
+  const json = await response.json().catch(() => ({}));
+
   if (!response.ok) {
-    throw new Error("Request failed");
+    const message = json?.message || `Request failed (${response.status})`;
+    throw new Error(message);
   }
 
-  return response.json();
+  return json;
 }
