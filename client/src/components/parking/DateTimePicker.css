@@ -1,0 +1,175 @@
+/* wrapper fills the row */
+.sps-dtp-wrapper,
+.sps-dtp-wrap {
+  width: 100%;
+}
+
+/* the text input */
+.sps-dtp-wrapper .react-datepicker__input-container input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-size: 0.875rem;
+  color: #1a1a2e;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.sps-dtp-wrapper .react-datepicker__input-container input:focus {
+  border-color: #bd3952;
+  box-shadow: 0 0 0 3px rgba(189, 57, 82, 0.15);
+}
+
+/* popper positioning */
+.sps-dtp-popper {
+  z-index: 9999 !important;
+}
+
+/* calendar container */
+.sps-calendar.react-datepicker {
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(189, 57, 82, 0.12), 0 2px 8px rgba(0,0,0,0.08);
+  font-family: inherit;
+  overflow: hidden;
+  padding: 0.25rem;
+}
+
+/* hide the built-in triangle arrow */
+.sps-dtp-popper .react-datepicker__triangle {
+  display: none;
+}
+
+/* header */
+.sps-calendar .react-datepicker__header {
+  background: transparent;
+  border-bottom: 1px solid rgba(189, 57, 82, 0.1);
+  padding: 0.75rem 0.5rem 0.5rem;
+}
+
+.sps-calendar .react-datepicker__current-month {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+
+/* nav arrows */
+.sps-calendar .react-datepicker__navigation {
+  top: 0.85rem;
+}
+
+.sps-calendar .react-datepicker__navigation-icon::before {
+  border-color: #bd3952;
+  border-width: 2px 2px 0 0;
+  width: 7px;
+  height: 7px;
+}
+
+.sps-calendar .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+  border-color: #8e1f38;
+}
+
+/* day-of-week header */
+.sps-calendar .react-datepicker__day-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #bd3952;
+  width: 2rem;
+  line-height: 2rem;
+}
+
+/* day cells */
+.sps-calendar .react-datepicker__day {
+  width: 2rem;
+  line-height: 2rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1a1a2e;
+  transition: background 0.12s, color 0.12s;
+  margin: 1px;
+}
+
+.sps-calendar .react-datepicker__day:hover {
+  background: rgba(189, 57, 82, 0.1);
+  color: #bd3952;
+}
+
+/* today */
+.sps-calendar .react-datepicker__day--today {
+  font-weight: 800;
+  color: #bd3952;
+  background: rgba(189, 57, 82, 0.08);
+}
+
+/* selected */
+.sps-calendar .react-datepicker__day--selected,
+.sps-calendar .react-datepicker__day--keyboard-selected {
+  background: #bd3952 !important;
+  color: #fff !important;
+  border-radius: 0.5rem;
+}
+
+.sps-calendar .react-datepicker__day--selected:hover {
+  background: #8e1f38 !important;
+}
+
+/* disabled / outside month */
+.sps-calendar .react-datepicker__day--disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.sps-calendar .react-datepicker__day--outside-month {
+  color: #d1d5db;
+}
+
+/* time panel */
+.sps-calendar .react-datepicker__time-container {
+  border-left: 1px solid rgba(189, 57, 82, 0.1);
+  width: 90px;
+}
+
+.sps-calendar .react-datepicker__time-container .react-datepicker__time-box {
+  width: 90px;
+}
+
+.sps-calendar .react-datepicker-time__header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #bd3952;
+  padding: 0.5rem 0;
+}
+
+.sps-calendar .react-datepicker__time-list-item {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1a1a2e;
+  padding: 0.3rem 0.5rem !important;
+  border-radius: 0.375rem;
+  transition: background 0.1s;
+}
+
+.sps-calendar .react-datepicker__time-list-item:hover {
+  background: rgba(189, 57, 82, 0.1) !important;
+  color: #bd3952 !important;
+}
+
+.sps-calendar .react-datepicker__time-list-item--selected {
+  background: #bd3952 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
