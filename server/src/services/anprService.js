@@ -1,11 +1,21 @@
 import { prisma } from "../config/db.js";
 import { publishCommand } from "./mqttService.js";
+import { getFormattedSpot } from "../utils/spotFormatter.js";
+
+const OVERSTAY_BUFFER_MINUTES = 15;
+const EARLY_ENTRY_BUFFER_MINUTES = 15;
+
+async function emitSpotUpdate(io, spotId) {
+  if (!io) return;
+  const spot = await getFormattedSpot(spotId);
+  if (spot) io.emit("parking:spot:updated", spot);
+}
 
 export const anprService = {
   async detectEntry(plate, io) {
     const now = new Date();
 
-    // Case 1 — known vehicle with a valid upcoming reservation (allow 15 min early)
+    // ── Caz 1: vehicul cunoscut cu rezervare validă ───────────────────────
     const vehicle = await prisma.vehicle.findUnique({
       where: { licensePlate: plate },
     });
@@ -15,88 +25,168 @@ export const anprService = {
         where: {
           vehicleId: vehicle.id,
           status: "UPCOMING",
-          startTime: { lte: new Date(now.getTime() + 15 * 60 * 1000) },
+          startTime: {
+            lte: new Date(
+              now.getTime() + EARLY_ENTRY_BUFFER_MINUTES * 60 * 1000,
+            ),
+          },
           endTime: { gte: now },
         },
         include: { parkingSpot: true },
       });
 
       if (reservation) {
-        publishCommand("bariera_intrare", "OPEN");
+        const targetSpot = reservation.parkingSpot;
 
-        await Promise.all([
-          prisma.reservation.update({
-            where: { id: reservation.id },
-            data: { status: "ACTIVE" },
-          }),
-          prisma.parkingSpot.update({
-            where: { id: reservation.parkingSpotId },
-            data: { isAvailable: false },
-          }),
-          prisma.parkingEvent.create({
-            data: {
-              type: "ENTRY",
-              entryType: "RESERVATION",
-              description: `${plate} a intrat cu rezervare — loc ${reservation.parkingSpot.code}`,
-              licensePlate: plate,
-              parkingSpotId: reservation.parkingSpotId,
-            },
-          }),
-        ]);
+        // Locul rezervat e liber → intrare normală
+        if (targetSpot.isAvailable) {
+          publishCommand("bariera_intrare", "OPEN");
 
-        io?.emit("parking:spot:updated", {
-          id: reservation.parkingSpotId,
-          code: reservation.parkingSpot.code,
-          isAvailable: false,
+          await Promise.all([
+            prisma.reservation.update({
+              where: { id: reservation.id },
+              data: { status: "ACTIVE" },
+            }),
+            prisma.parkingSpot.update({
+              where: { id: targetSpot.id },
+              data: { isAvailable: false },
+            }),
+            prisma.parkingEvent.create({
+              data: {
+                type: "ENTRY",
+                entryType: "RESERVATION",
+                description: `${plate} a intrat cu rezervare — loc ${targetSpot.code}`,
+                licensePlate: plate,
+                parkingSpotId: targetSpot.id,
+              },
+            }),
+          ]);
+
+          await emitSpotUpdate(io, targetSpot.id);
+          return { allowed: true, type: "RESERVATION", spot: targetSpot.code };
+        }
+
+        // Locul rezervat e ocupat → verifică overstay
+        const activeReservationOnSpot = await prisma.reservation.findFirst({
+          where: { parkingSpotId: targetSpot.id, status: "ACTIVE" },
         });
 
-        return { allowed: true, type: "RESERVATION", spot: reservation.parkingSpot.code };
+        const isOverstay =
+          activeReservationOnSpot &&
+          new Date(activeReservationOnSpot.endTime).getTime() +
+            OVERSTAY_BUFFER_MINUTES * 60 * 1000 <
+            now.getTime();
+
+        // Caută loc de conflict
+        const conflictSpot = await prisma.parkingSpot.findFirst({
+          where: { spotType: "CONFLICT", isAvailable: true },
+          orderBy: { code: "asc" },
+        });
+
+        if (conflictSpot) {
+          publishCommand("bariera_intrare", "OPEN");
+
+          await Promise.all([
+            prisma.parkingSpot.update({
+              where: { id: conflictSpot.id },
+              data: { isAvailable: false },
+            }),
+            prisma.parkingEvent.create({
+              data: {
+                type: "CONFLICT",
+                entryType: "CONFLICT",
+                description: `${plate} redirectionat la ${conflictSpot.code} — locul ${targetSpot.code} ocupat${isOverstay ? " (overstay)" : ""}`,
+                licensePlate: plate,
+                parkingSpotId: conflictSpot.id,
+              },
+            }),
+          ]);
+
+          await emitSpotUpdate(io, conflictSpot.id);
+          return {
+            allowed: true,
+            type: "CONFLICT",
+            spot: conflictSpot.code,
+            originalSpot: targetSpot.code,
+            reason: isOverstay ? "overstay" : "occupied",
+          };
+        }
+
+        // Niciun loc de conflict
+        publishCommand("bariera_intrare", "DENY");
+        await prisma.parkingEvent.create({
+          data: {
+            type: "DENIED",
+            description: `${plate} — locul ${targetSpot.code} ocupat, niciun loc de conflict disponibil`,
+            licensePlate: plate,
+            parkingSpotId: targetSpot.id,
+          },
+        });
+        return { allowed: false, reason: "conflict_no_space" };
       }
     }
 
-    // Case 2 — walk-in: assign first available spot
-    const freeSpot = await prisma.parkingSpot.findFirst({
-      where: { isAvailable: true },
+    // ── Caz 2: walk-in — caută primul loc WALK_IN disponibil ─────────────
+    const freeWalkInSpot = await prisma.parkingSpot.findFirst({
+      where: { spotType: "WALK_IN", isAvailable: true },
       orderBy: { code: "asc" },
     });
 
-    if (!freeSpot) {
+    if (!freeWalkInSpot) {
       publishCommand("bariera_intrare", "DENY");
-
       await prisma.parkingEvent.create({
         data: {
           type: "DENIED",
-          description: `${plate} — parcare plina, intrare refuzata`,
+          description: `${plate} — niciun loc walk-in disponibil`,
           licensePlate: plate,
         },
       });
-      return { allowed: false, reason: "full" };
+      return { allowed: false, reason: "no_walkin_space" };
     }
 
     publishCommand("bariera_intrare", "OPEN");
 
+    // Dacă placa e înregistrată → creează rezervare walk-in + plată pendintă
+    if (vehicle) {
+      const maxEndTime = new Date(now.getTime() + 24 * 3600000);
+      const walkInReservation = await prisma.reservation.create({
+        data: {
+          userId: vehicle.ownerId,
+          vehicleId: vehicle.id,
+          parkingSpotId: freeWalkInSpot.id,
+          status: "ACTIVE",
+          startTime: now,
+          endTime: maxEndTime,
+          totalCost: 0,
+        },
+      });
+      await prisma.payment.create({
+        data: {
+          reservationId: walkInReservation.id,
+          userId: vehicle.ownerId,
+          amount: 0,
+          status: "PENDING",
+        },
+      });
+    }
+
     await Promise.all([
       prisma.parkingSpot.update({
-        where: { id: freeSpot.id },
+        where: { id: freeWalkInSpot.id },
         data: { isAvailable: false },
       }),
       prisma.parkingEvent.create({
         data: {
           type: "ENTRY",
           entryType: "WALK_IN",
-          description: `${plate} a intrat fara rezervare — loc ${freeSpot.code}`,
+          description: `${plate} a intrat fara rezervare — loc ${freeWalkInSpot.code}`,
           licensePlate: plate,
-          parkingSpotId: freeSpot.id,
+          parkingSpotId: freeWalkInSpot.id,
         },
       }),
     ]);
 
-    io?.emit("parking:spot:updated", {
-      id: freeSpot.id,
-      code: freeSpot.code,
-      isAvailable: false,
-    });
-
-    return { allowed: true, type: "WALK_IN", spot: freeSpot.code };
+    await emitSpotUpdate(io, freeWalkInSpot.id);
+    return { allowed: true, type: "WALK_IN", spot: freeWalkInSpot.code };
   },
 };
