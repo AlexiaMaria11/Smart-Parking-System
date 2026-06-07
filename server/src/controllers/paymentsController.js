@@ -9,5 +9,14 @@ export const paymentsController = {
     } catch (error) {
       return next(error);
     }
-  }
+  },
+
+  async pay(req, res, next) {
+    try {
+      const data = await paymentsService.pay(req.params.id, req.user.id);
+      return ok(res, data);
+    } catch (error) {
+      return next(error);
+    }
+  },
 };

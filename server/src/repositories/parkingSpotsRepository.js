@@ -6,4 +6,18 @@ export const parkingSpotsRepository = {
       orderBy: { code: "asc" },
     });
   },
+
+  async release(id) {
+    return prisma.parkingSpot.update({
+      where: { id },
+      data: { isAvailable: true },
+    });
+  },
+
+  async setDefective(id) {
+    return prisma.parkingSpot.update({
+      where: { id },
+      data: { isAvailable: false },
+    });
+  },
 };

@@ -8,13 +8,33 @@ export const paymentsRepository = {
       include: {
         reservation: {
           include: {
-            parkingSpot: { select: { code: true } },
-            vehicle: { select: { licensePlate: true } }
-          }
+            parkingSpot: { select: { code: true, pricePerHour: true } },
+            vehicle: { select: { licensePlate: true } },
+          },
         },
-        user: { select: { id: true, name: true, email: true } }
+        user: { select: { id: true, name: true, email: true } },
       },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
     });
-  }
+  },
+
+  findById(id) {
+    return prisma.payment.findUnique({
+      where: { id },
+      include: {
+        reservation: {
+          include: {
+            parkingSpot: { select: { code: true, pricePerHour: true } },
+          },
+        },
+      },
+    });
+  },
+
+  pay(id, finalAmount) {
+    return prisma.payment.update({
+      where: { id },
+      data: { status: "PAID", amount: finalAmount },
+    });
+  },
 };
