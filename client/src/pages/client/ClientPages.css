@@ -140,7 +140,7 @@
 }
 
 .client-vehicle-list {
-  @apply grid gap-5 md:grid-cols-2 xl:grid-cols-3;
+  @apply grid gap-5 md:grid-cols-2;
 }
 
 .client-add-vehicle-form {
