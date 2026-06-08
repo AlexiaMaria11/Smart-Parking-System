@@ -112,7 +112,7 @@ display.spi_setup()
 display.init_gc9a01()
 update_display(locuri_ramase)
 
-print(f"=== Entry trigger activ | Buton pe GPIO{GPIO_BUTTON} | Ctrl+C pentru oprire ===\n")
+print(f"Entry trigger activ | Buton pe GPIO{GPIO_BUTTON} | Ctrl+C pentru oprire\n")
 button.when_pressed = on_button_pressed
 
 try:
