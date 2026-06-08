@@ -12,7 +12,7 @@
 }
 
 .parking-grid-list {
-  @apply grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-32;
+  @apply grid grid-cols-4 gap-x-3 gap-y-32;
 }
 
 .parking-spot {
@@ -43,6 +43,14 @@
   @apply bg-[#8fa8b3] text-[#1e3038];
 }
 
+.parking-spot-conflict {
+  @apply bg-[#f5a623] text-[#4a2800];
+}
+
+.spot-type-badge {
+  @apply rounded-full bg-white/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-current;
+}
+
 .parking-spot-active {
   @apply ring-4 ring-white ring-offset-2 ring-offset-transparent;
 }
@@ -63,12 +71,16 @@
   @apply mt-7;
 }
 
-.parking-spot-number {
+.parking-spot-code {
   @apply font-display text-3xl font-semibold;
 }
 
 .parking-spot-price {
-  @apply mt-2 text-sm opacity-80;
+  @apply mt-1 text-sm opacity-80;
+}
+
+.parking-spot-type-badge {
+  @apply mt-2 inline-block rounded-full bg-white/40 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest;
 }
 
 .spot-details-empty-title {
@@ -105,6 +117,47 @@
 
 .spot-details-actions {
   @apply mt-6 flex flex-wrap gap-3;
+}
+
+.spot-details-info {
+  @apply text-sm text-muted italic;
+}
+
+.spot-reserve-form {
+  @apply w-full space-y-4;
+}
+
+
+.spot-reserve-label {
+  @apply text-sm text-muted;
+}
+
+.spot-reserve-field {
+  @apply flex flex-col gap-1;
+}
+
+.spot-reserve-durations {
+  @apply flex gap-2;
+}
+
+.spot-reserve-duration-btn {
+  @apply rounded-xl border border-border bg-white/70 px-4 py-2 text-sm font-semibold text-ink transition hover:border-primary hover:text-primary;
+}
+
+.spot-reserve-duration-active {
+  @apply border-primary bg-primary/10 text-primary;
+}
+
+.spot-reserve-cost {
+  @apply text-sm font-semibold text-ink;
+}
+
+.spot-reserve-actions {
+  @apply flex gap-3;
+}
+
+.spot-reserve-redirect-msg {
+  @apply rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800;
 }
 
 .spot-details-overlay-root {
