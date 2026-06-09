@@ -31,6 +31,7 @@ model Vehicle {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   reservations Reservation[]
+  payments     Payment[]
   owner        User          @relation(fields: [ownerId], references: [id])
 }
 
@@ -44,6 +45,7 @@ model ParkingSpot {
   updatedAt    DateTime       @updatedAt
   events       ParkingEvent[]
   reservations Reservation[]
+  payments     Payment[]
 }
 
 model Reservation {
@@ -65,13 +67,17 @@ model Reservation {
 
 model Payment {
   id            String        @id @default(cuid())
-  reservationId String
+  reservationId String?
   userId        String
+  parkingSpotId String?
+  vehicleId     String?
   amount        Decimal       @db.Decimal(10, 2)
   status        PaymentStatus @default(PENDING)
   createdAt     DateTime      @default(now())
-  reservation   Reservation   @relation(fields: [reservationId], references: [id])
+  reservation   Reservation?  @relation(fields: [reservationId], references: [id])
   user          User          @relation(fields: [userId], references: [id])
+  parkingSpot   ParkingSpot?  @relation(fields: [parkingSpotId], references: [id])
+  vehicle       Vehicle?      @relation(fields: [vehicleId], references: [id])
 }
 
 model ParkingEvent {

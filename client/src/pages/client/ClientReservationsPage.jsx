@@ -14,11 +14,11 @@ const STATUS_TO_SECTION = {
 
 function formatReservation(r) {
   const fmt = (iso) =>
-    new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    new Date(iso).toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" });
   return {
     id: r.id,
     spot: r.parkingSpot?.code ?? "—",
-    date: new Date(r.startTime).toLocaleDateString("en-GB", {
+    date: new Date(r.startTime).toLocaleDateString("ro-RO", {
       day: "2-digit", month: "short", year: "numeric",
     }),
     interval: `${fmt(r.startTime)} - ${fmt(r.endTime)}`,

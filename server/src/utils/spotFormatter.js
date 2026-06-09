@@ -12,7 +12,7 @@ function buildSelect(now) {
       where: {
         OR: [
           { status: "ACTIVE" },
-          { status: "UPCOMING", startTime: { gte: now, lte: in15 } },
+          { status: "UPCOMING", startTime: { lte: in15 }, endTime: { gte: now } },
         ],
       },
       select: {

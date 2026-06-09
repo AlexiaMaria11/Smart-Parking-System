@@ -19,4 +19,14 @@ export function registerParkingSocket(io) {
       io.emit("parking:spot:updated", payload);
     });
   });
+
+  // Re-broadcast all spots every minute so "upcoming in 15min" turns yellow automatically
+  setInterval(async () => {
+    try {
+      const spots = await getAllFormattedSpots();
+      spots.forEach((spot) => io.emit("parking:spot:updated", spot));
+    } catch (err) {
+      console.error("[Socket] tick error:", err.message);
+    }
+  }, 60 * 1000);
 }

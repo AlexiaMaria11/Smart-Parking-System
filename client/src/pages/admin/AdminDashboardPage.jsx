@@ -79,7 +79,7 @@ function buildChartData(events) {
     d.setDate(d.getDate() - (6 - i));
     return d;
   });
-  const label = (d) => d.toLocaleDateString("en-GB", { weekday: "short" });
+  const label = (d) => d.toLocaleDateString("ro-RO", { weekday: "short" });
 
   const entryCounts = days.map((d) => {
     const dateStr = d.toDateString();

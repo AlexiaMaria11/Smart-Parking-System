@@ -227,7 +227,7 @@ export function SpotDetailsCard({ spot, adminMode = false, onClose, onActionDone
               </div>
 
               <p className="spot-reserve-cost">
-                End: {endDate.toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}{" "}
+                End: {endDate.toLocaleString("ro-RO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}{" "}
                 · Estimated cost: <strong>{estimatedCost} RON</strong>
               </p>
 

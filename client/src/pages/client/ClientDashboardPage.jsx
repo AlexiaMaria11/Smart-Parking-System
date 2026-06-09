@@ -27,12 +27,12 @@ const panelVariants = {
 };
 
 function formatDate(iso) {
-  return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function formatInterval(start, end) {
   const fmt = (iso) =>
-    new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    new Date(iso).toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" });
   return `${fmt(start)} - ${fmt(end)}`;
 }
 
@@ -44,8 +44,13 @@ export function ClientDashboardPage() {
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   const { data: reservations } = useApi(`/reservations?_=${refreshKey}`);
+  const { data: payments } = useApi(`/payments?_=${refreshKey}`);
   const { data: vehicles } = useApi(`/vehicles?_=${refreshKey}`);
   const { data: notifications } = useApi(`/notifications?_=${refreshKey}`);
+
+  const walkInPayments = (payments ?? []).filter(
+    (p) => !p.reservationId && p.status === "PENDING"
+  );
 
   const [actionState, setActionState] = useState({});
 
@@ -99,7 +104,7 @@ export function ClientDashboardPage() {
       d.setMonth(d.getMonth() - i);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       monthlyMap[key] = {
-        label: d.toLocaleDateString("en-GB", { month: "short" }),
+        label: d.toLocaleDateString("ro-RO", { month: "short" }),
         total: 0,
       };
     }
@@ -147,6 +152,19 @@ export function ClientDashboardPage() {
       setResAction(reservation.id, { payError: err.message || "Payment failed." });
     } finally {
       setResAction(reservation.id, { payLoading: false });
+    }
+  }
+
+  async function handlePayWalkIn(payment) {
+    if (!window.confirm(`Confirm payment for walk-in on spot ${payment.parkingSpot?.code ?? "?"}? Amount will be calculated based on time parked.`)) return;
+    setResAction(payment.id, { payLoading: true, payError: null });
+    try {
+      await apiRequest(`/payments/${payment.id}/pay`, { method: "PATCH" });
+      refresh();
+    } catch (err) {
+      setResAction(payment.id, { payError: err.message || "Payment failed." });
+    } finally {
+      setResAction(payment.id, { payLoading: false });
     }
   }
 
@@ -249,6 +267,38 @@ export function ClientDashboardPage() {
               </div>
             )}
           </div>
+          {walkInPayments.length > 0 && (
+            <div className="client-status-panel">
+              <p className="client-panel-eyebrow">Walk-in sessions</p>
+              <div className="client-active-list">
+                {walkInPayments.map((p) => {
+                  const s = actionState[p.id] ?? {};
+                  return (
+                    <div key={p.id} className="client-active-item">
+                      <div className="client-active-header">
+                        <div>
+                          <p className="client-current-status">WALK-IN</p>
+                          <h3 className="client-current-spot">{p.parkingSpot?.code ?? "—"}</h3>
+                        </div>
+                        <span className="payment-badge-pending">Pending</span>
+                      </div>
+                      <div className="client-current-details">
+                        <p><span>Vehicle:</span> {p.vehicle?.label ?? p.vehicle?.licensePlate ?? "—"}</p>
+                        <p><span>Cost:</span> Calculated at payment</p>
+                      </div>
+                      {s.payError && <p className="entity-card-error">{s.payError}</p>}
+                      <div className="client-current-actions">
+                        <Button onClick={() => handlePayWalkIn(p)} disabled={s.payLoading}>
+                          {s.payLoading ? "Processing..." : "Pay"}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <ChartPanel
             series={chartData.series}
             labels={chartData.labels}
