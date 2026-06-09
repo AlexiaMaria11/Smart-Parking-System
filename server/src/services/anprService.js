@@ -146,24 +146,13 @@ export const anprService = {
 
     publishCommand("bariera_intrare", "OPEN");
 
-    // Dacă placa e înregistrată → creează rezervare walk-in + plată pendintă
+    // Dacă placa e înregistrată → creează doar o plată walk-in pendintă (fără rezervare)
     if (vehicle) {
-      const maxEndTime = new Date(now.getTime() + 24 * 3600000);
-      const walkInReservation = await prisma.reservation.create({
+      await prisma.payment.create({
         data: {
           userId: vehicle.ownerId,
           vehicleId: vehicle.id,
           parkingSpotId: freeWalkInSpot.id,
-          status: "ACTIVE",
-          startTime: now,
-          endTime: maxEndTime,
-          totalCost: 0,
-        },
-      });
-      await prisma.payment.create({
-        data: {
-          reservationId: walkInReservation.id,
-          userId: vehicle.ownerId,
           amount: 0,
           status: "PENDING",
         },

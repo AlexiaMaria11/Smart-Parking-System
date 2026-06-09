@@ -15,22 +15,25 @@ export const paymentsService = {
     const reservation = payment.reservation;
     let finalAmount = Number(payment.amount);
 
-    // Walk-in: amount=0 → calculează în funcție de timp parcat efectiv
-    if (finalAmount === 0 && reservation) {
-      const durationHours = (Date.now() - new Date(reservation.startTime).getTime()) / 3600000;
-      const pricePerHour = Number(reservation.parkingSpot.pricePerHour);
-      finalAmount = Math.ceil(durationHours * 10) / 10 * pricePerHour; // rotunjit la 0.1h
-      finalAmount = parseFloat(finalAmount.toFixed(2));
+    // amount=0 → calculează în funcție de timp parcat efectiv
+    if (finalAmount === 0) {
+      const startTime = reservation ? new Date(reservation.startTime) : new Date(payment.createdAt);
+      const spot = reservation?.parkingSpot ?? payment.parkingSpot;
+      const durationHours = (Date.now() - startTime.getTime()) / 3600000;
+      const pricePerHour = Number(spot?.pricePerHour ?? 0);
+      finalAmount = parseFloat((Math.ceil(durationHours * 10) / 10 * pricePerHour).toFixed(2));
 
-      await prisma.reservation.update({
-        where: { id: reservation.id },
-        data: { totalCost: finalAmount },
-      });
+      if (reservation) {
+        await prisma.reservation.update({
+          where: { id: reservation.id },
+          data: { totalCost: finalAmount },
+        });
+      }
     }
 
     const updated = await paymentsRepository.pay(id, finalAmount);
 
-    const spotCode = reservation?.parkingSpot?.code ?? "spot";
+    const spotCode = reservation?.parkingSpot?.code ?? payment.parkingSpot?.code ?? "spot";
     await prisma.notification.create({
       data: {
         userId,

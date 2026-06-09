@@ -9,9 +9,11 @@ export const paymentsRepository = {
         reservation: {
           include: {
             parkingSpot: { select: { code: true, pricePerHour: true } },
-            vehicle: { select: { licensePlate: true } },
+            vehicle: { select: { licensePlate: true, label: true } },
           },
         },
+        parkingSpot: { select: { code: true, pricePerHour: true } },
+        vehicle: { select: { licensePlate: true, label: true } },
         user: { select: { id: true, name: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -27,6 +29,7 @@ export const paymentsRepository = {
             parkingSpot: { select: { code: true, pricePerHour: true } },
           },
         },
+        parkingSpot: { select: { code: true, pricePerHour: true } },
       },
     });
   },
