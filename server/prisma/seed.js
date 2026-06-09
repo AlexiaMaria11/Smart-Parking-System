@@ -319,7 +319,7 @@ async function main() {
       {
         type: ParkingEventType.ENTRY,
         entryType: EntryType.RESERVATION,
-        description: "B-11-CLI a intrat cu rezervare — loc A1",
+        description: "B-11-CLI entered with reservation — spot A1",
         licensePlate: "B-11-CLI",
         parkingSpotId: spots[0].id,
         createdAt: new Date(now.getTime() - 40 * 60 * 1000),
@@ -327,7 +327,7 @@ async function main() {
       {
         type: ParkingEventType.ENTRY,
         entryType: EntryType.RESERVATION,
-        description: "TM-01-ABC a intrat cu rezervare — loc A2",
+        description: "TM-01-ABC entered with reservation — spot A2",
         licensePlate: "TM-01-ABC",
         parkingSpotId: spots[1].id,
         createdAt: new Date(now.getTime() - 30 * 60 * 1000),
@@ -335,7 +335,7 @@ async function main() {
       {
         type: ParkingEventType.ENTRY,
         entryType: EntryType.WALK_IN,
-        description: "IS-05-ANA a intrat fara rezervare — loc B1",
+        description: "IS-05-ANA entered as walk-in — spot B1",
         licensePlate: "IS-05-ANA",
         parkingSpotId: spots[3].id,
         createdAt: new Date(now.getTime() - 20 * 60 * 1000),
@@ -343,21 +343,21 @@ async function main() {
       // Rezervări create
       {
         type: ParkingEventType.RESERVATION_CREATED,
-        description: "Rezervare nouă creată pentru A3 (user1 — TM-02-XYZ)",
+        description: "New reservation created for A3 (user1 — TM-02-XYZ)",
         licensePlate: "TM-02-XYZ",
         parkingSpotId: spots[2].id,
         createdAt: new Date(now.getTime() - 25 * 60 * 1000),
       },
       {
         type: ParkingEventType.RESERVATION_CREATED,
-        description: "Rezervare nouă creată pentru A1 (user3 — CJ-10-ALX)",
+        description: "New reservation created for A1 (user3 — CJ-10-ALX)",
         licensePlate: "CJ-10-ALX",
         parkingSpotId: spots[0].id,
         createdAt: new Date(now.getTime() - 10 * 60 * 1000),
       },
       {
         type: ParkingEventType.RESERVATION_CREATED,
-        description: "Rezervare nouă creată pentru A3 (clientDemo)",
+        description: "New reservation created for A3 (clientDemo)",
         licensePlate: "B-11-CLI",
         parkingSpotId: spots[2].id,
         createdAt: new Date(now.getTime() - 15 * 60 * 1000),
@@ -365,21 +365,21 @@ async function main() {
       // Ieșiri istorice
       {
         type: ParkingEventType.EXIT,
-        description: "B-99-MAR a eliberat locul A1",
+        description: "B-99-MAR vacated spot A1",
         licensePlate: "B-99-MAR",
         parkingSpotId: spots[0].id,
         createdAt: new Date(now.getTime() - 4 * 60 * 60 * 1000),
       },
       {
         type: ParkingEventType.EXIT,
-        description: "IS-05-ANA a eliberat locul A2",
+        description: "IS-05-ANA vacated spot A2",
         licensePlate: "IS-05-ANA",
         parkingSpotId: spots[1].id,
         createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1000),
       },
       {
         type: ParkingEventType.EXIT,
-        description: "TM-77-RAD a eliberat locul A3",
+        description: "TM-77-RAD vacated spot A3",
         licensePlate: "TM-77-RAD",
         parkingSpotId: spots[2].id,
         createdAt: new Date(now.getTime() - 24 * 60 * 60 * 1000),
@@ -387,7 +387,7 @@ async function main() {
       // No-show
       {
         type: ParkingEventType.NO_SHOW,
-        description: "TM-01-ABC nu s-a prezentat la rezervare A3",
+        description: "TM-01-ABC did not show up for reservation on A3",
         licensePlate: "TM-01-ABC",
         parkingSpotId: spots[2].id,
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
@@ -395,14 +395,14 @@ async function main() {
       // Denied
       {
         type: ParkingEventType.DENIED,
-        description: "CJ-10-ZZZ — acces refuzat, parcare plina",
+        description: "CJ-10-ZZZ — access denied, parking full",
         licensePlate: "CJ-10-ZZZ",
         createdAt: new Date(now.getTime() - 45 * 60 * 1000),
       },
       // Conflict — masina a stat peste rezervare, a doua masina a fost redirectionata
       {
         type: ParkingEventType.CONFLICT,
-        description: "IS-55-XYZ a depasit rezervarea pe A1 — redirectionat la C1",
+        description: "IS-55-XYZ overstayed reservation on A1 — redirected to C1",
         licensePlate: "IS-55-XYZ",
         parkingSpotId: spots[6].id,
         createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
@@ -410,7 +410,7 @@ async function main() {
       // Anulare rezervare
       {
         type: ParkingEventType.RESERVATION_CANCELLED,
-        description: "Rezervare anulata pentru A3 (TM-77-RAD)",
+        description: "Reservation cancelled for A3 (TM-77-RAD)",
         licensePlate: "TM-77-RAD",
         parkingSpotId: spots[2].id,
         createdAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),

@@ -55,7 +55,7 @@ export const anprService = {
               data: {
                 type: "ENTRY",
                 entryType: "RESERVATION",
-                description: `${plate} a intrat cu rezervare — loc ${targetSpot.code}`,
+                description: `${plate} entered with reservation — spot ${targetSpot.code}`,
                 licensePlate: plate,
                 parkingSpotId: targetSpot.id,
               },
@@ -95,7 +95,7 @@ export const anprService = {
               data: {
                 type: "CONFLICT",
                 entryType: "CONFLICT",
-                description: `${plate} redirectionat la ${conflictSpot.code} — locul ${targetSpot.code} ocupat${isOverstay ? " (overstay)" : ""}`,
+                description: `${plate} redirected to ${conflictSpot.code} — spot ${targetSpot.code} occupied${isOverstay ? " (overstay)" : ""}`,
                 licensePlate: plate,
                 parkingSpotId: conflictSpot.id,
               },
@@ -117,7 +117,7 @@ export const anprService = {
         await prisma.parkingEvent.create({
           data: {
             type: "DENIED",
-            description: `${plate} — locul ${targetSpot.code} ocupat, niciun loc de conflict disponibil`,
+            description: `${plate} — spot ${targetSpot.code} occupied, no conflict spot available`,
             licensePlate: plate,
             parkingSpotId: targetSpot.id,
           },
@@ -137,7 +137,7 @@ export const anprService = {
       await prisma.parkingEvent.create({
         data: {
           type: "DENIED",
-          description: `${plate} — niciun loc walk-in disponibil`,
+          description: `${plate} — no walk-in spot available`,
           licensePlate: plate,
         },
       });
@@ -179,7 +179,7 @@ export const anprService = {
         data: {
           type: "ENTRY",
           entryType: "WALK_IN",
-          description: `${plate} a intrat fara rezervare — loc ${freeWalkInSpot.code}`,
+          description: `${plate} entered as walk-in — spot ${freeWalkInSpot.code}`,
           licensePlate: plate,
           parkingSpotId: freeWalkInSpot.id,
         },

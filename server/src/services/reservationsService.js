@@ -106,7 +106,7 @@ export const reservationsService = {
     await prisma.parkingEvent.create({
       data: {
         type: "RESERVATION_CANCELLED",
-        description: `Rezervare anulată pentru ${reservation.parkingSpot.code}`,
+        description: `Reservation cancelled for ${reservation.parkingSpot.code}`,
         parkingSpotId: reservation.parkingSpotId,
         licensePlate: reservation.vehicle.licensePlate,
       },

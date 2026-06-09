@@ -19,7 +19,7 @@ export const parkingSpotsService = {
     await prisma.parkingEvent.create({
       data: {
         type: "EXIT",
-        description: `Loc ${spot.code} eliberat forțat de admin`,
+        description: `Spot ${spot.code} force-released by admin`,
         parkingSpotId: id,
       },
     });
@@ -41,7 +41,7 @@ export const parkingSpotsService = {
     await prisma.parkingEvent.create({
       data: {
         type: "DENIED",
-        description: `Loc ${spot.code} marcat ca indisponibil de admin`,
+        description: `Spot ${spot.code} marked as unavailable by admin`,
         parkingSpotId: id,
       },
     });

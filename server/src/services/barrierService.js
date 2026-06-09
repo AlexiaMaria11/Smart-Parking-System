@@ -33,7 +33,7 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
       await prisma.parkingEvent.create({
         data: {
           type: "ENTRY",
-          description: `Masina ${plate} a intrat si a ocupat locul ${spot.code}`,
+          description: `Vehicle ${plate} entered and occupied spot ${spot.code}`,
           licensePlate: plate,
           parkingSpotId: spot.id,
         },
@@ -96,7 +96,7 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
       await prisma.parkingEvent.create({
         data: {
           type: "EXIT",
-          description: `Masina ${plate} a eliberat locul`,
+          description: `Vehicle ${plate} vacated the spot`,
           licensePlate: plate,
           parkingSpotId: event.parkingSpotId,
         },
