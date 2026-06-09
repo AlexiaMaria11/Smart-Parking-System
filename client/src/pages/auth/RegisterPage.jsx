@@ -9,20 +9,26 @@ import "./AuthPages.css";
 export function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    role: "CLIENT"
-  });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const user = register(form);
-    navigate(user.role === "ADMIN" ? ROUTE_PATHS.ADMIN_DASHBOARD : ROUTE_PATHS.CLIENT_DASHBOARD);
+    setError("");
+    setLoading(true);
+    try {
+      const user = await register(form);
+      navigate(user.role === "ADMIN" ? ROUTE_PATHS.ADMIN_DASHBOARD : ROUTE_PATHS.CLIENT_DASHBOARD);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthShell title="Get Started Now" subtitle="Create an account and choose the role flow you want to preview in this starter project.">
+    <AuthShell title="Get Started Now" subtitle="Create an account to access the Smart Parking System.">
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
           Name
@@ -30,28 +36,34 @@ export function RegisterPage() {
             className="auth-field"
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+            required
           />
         </label>
         <label className="auth-label">
           Email address
           <input
+            type="email"
             className="auth-field"
             value={form.email}
             onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+            required
           />
         </label>
         <label className="auth-label">
-          Role
-          <select
+          Password
+          <input
+            type="password"
             className="auth-field"
-            value={form.role}
-            onChange={(event) => setForm((current) => ({ ...current, role: event.target.value }))}
-          >
-            <option value="CLIENT">Client</option>
-            <option value="ADMIN">Admin</option>
-          </select>
+            value={form.password}
+            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+            required
+          />
         </label>
-        <Button className="auth-submit">Sign Up</Button>
+
+        {error && <p className="auth-error">{error}</p>}
+        <Button className="auth-submit" disabled={loading}>
+          {loading ? "Creating account..." : "Sign Up"}
+        </Button>
       </form>
       <p className="auth-switch">
         Already have an account?{" "}

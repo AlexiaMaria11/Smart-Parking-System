@@ -70,7 +70,7 @@
 }
 
 .landing-features {
-  @apply py-14 lg:py-20;
+  @apply relative py-14 lg:py-20;
   scroll-margin-top: 96px;
 }
 
@@ -95,12 +95,12 @@
 }
 
 .landing-how {
-  @apply pb-20 pt-6 lg:pb-24 lg:pt-10;
+  @apply relative pb-20 pt-6 lg:pb-24 lg:pt-10;
   scroll-margin-top: 96px;
 }
 
 .landing-live-map {
-  @apply py-14 lg:py-20;
+  @apply relative py-14 lg:py-20;
   scroll-margin-top: 96px;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .landing-footer-cta {
-  @apply bg-[#9f2f46] py-14 text-white sm:py-16;
+  @apply relative bg-[#9f2f46] py-14 text-white sm:py-16;
 }
 
 .landing-footer-cta-inner {

@@ -35,11 +35,21 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
-  const register = ({ name, email, role }) => {
-    const nextUser = { name, email, role };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
-    setUser(nextUser);
-    return nextUser;
+  const register = async ({ name, email, password, role }) => {
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role })
+    });
+
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || "Registration failed");
+
+    const { data } = json;
+    localStorage.setItem(TOKEN_KEY, data.token);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
+    setUser(data.user);
+    return data.user;
   };
 
   const logout = () => {
