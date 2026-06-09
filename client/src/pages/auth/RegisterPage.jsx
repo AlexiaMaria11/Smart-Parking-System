@@ -3,22 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthShell } from "../../components/layout/AuthShell";
 import { Button } from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
+import { apiRequest } from "../../services/api";
 import { ROUTE_PATHS } from "../../constants/routes";
 import "./AuthPages.css";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", licensePlate: "", vehicleLabel: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (field) => (event) =>
+    setForm((current) => ({ ...current, [field]: event.target.value }));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const user = await register(form);
+      const user = await register({ name: form.name, email: form.email, password: form.password });
+      await apiRequest("/vehicles", {
+        method: "POST",
+        body: JSON.stringify({
+          licensePlate: form.licensePlate.toUpperCase(),
+          label: form.vehicleLabel.trim() || form.licensePlate.toUpperCase(),
+        }),
+      });
       navigate(user.role === "ADMIN" ? ROUTE_PATHS.ADMIN_DASHBOARD : ROUTE_PATHS.CLIENT_DASHBOARD);
     } catch (err) {
       setError(err.message);
@@ -35,7 +46,7 @@ export function RegisterPage() {
           <input
             className="auth-field"
             value={form.name}
-            onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+            onChange={handleChange("name")}
             required
           />
         </label>
@@ -45,7 +56,7 @@ export function RegisterPage() {
             type="email"
             className="auth-field"
             value={form.email}
-            onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+            onChange={handleChange("email")}
             required
           />
         </label>
@@ -55,8 +66,27 @@ export function RegisterPage() {
             type="password"
             className="auth-field"
             value={form.password}
-            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+            onChange={handleChange("password")}
             required
+          />
+        </label>
+        <label className="auth-label">
+          License plate
+          <input
+            className="auth-field"
+            value={form.licensePlate}
+            onChange={handleChange("licensePlate")}
+            placeholder="e.g. B-123-ABC"
+            required
+          />
+        </label>
+        <label className="auth-label">
+          Vehicle label <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span>
+          <input
+            className="auth-field"
+            value={form.vehicleLabel}
+            onChange={handleChange("vehicleLabel")}
+            placeholder="e.g. My Car"
           />
         </label>
 
