@@ -3,6 +3,6 @@ import { anprController } from "../controllers/anprController.js";
 
 const router = Router();
 
-router.post("/detect", anprController.detectEntry);
+router.post("/detect", anprController.detect);
 
 export default router;

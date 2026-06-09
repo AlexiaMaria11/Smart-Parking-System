@@ -189,4 +189,74 @@ export const anprService = {
     await emitSpotUpdate(io, freeWalkInSpot.id);
     return { allowed: true, type: "WALK_IN", spot: freeWalkInSpot.code };
   },
+
+  async detectExit(plate, io) {
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { licensePlate: plate },
+    });
+
+    if (!vehicle) {
+      return { exit_allowed: false, paid: null, spot_code: null, reason: "no_plate" };
+    }
+
+    // Check for unpaid active reservation
+    const pendingPayment = await prisma.payment.findFirst({
+      where: {
+        userId: vehicle.ownerId,
+        status: "PENDING",
+        reservation: { status: "ACTIVE" },
+      },
+      include: { reservation: { include: { parkingSpot: true } } },
+    });
+
+    if (pendingPayment) {
+      await prisma.notification.create({
+        data: {
+          userId: vehicle.ownerId,
+          title: "Payment required to exit",
+          message: "Please complete payment in the app (Dashboard → Pay) before leaving.",
+        },
+      });
+      return {
+        exit_allowed: false,
+        paid: false,
+        spot_code: pendingPayment.reservation.parkingSpot?.code ?? null,
+        reason: "unpaid",
+      };
+    }
+
+    // Find active reservation for this vehicle
+    const activeReservation = await prisma.reservation.findFirst({
+      where: { vehicleId: vehicle.id, status: "ACTIVE" },
+      include: { parkingSpot: true },
+    });
+
+    if (activeReservation) {
+      await Promise.all([
+        prisma.reservation.update({
+          where: { id: activeReservation.id },
+          data: { status: "COMPLETED", endTime: new Date() },
+        }),
+        prisma.parkingEvent.create({
+          data: {
+            type: "EXIT",
+            description: `${plate} exited — spot ${activeReservation.parkingSpot.code}`,
+            licensePlate: plate,
+            parkingSpotId: activeReservation.parkingSpot.id,
+          },
+        }),
+      ]);
+
+      // Spot availability is updated when Arduino sends status via MQTT
+      return {
+        exit_allowed: true,
+        paid: true,
+        spot_code: activeReservation.parkingSpot.code,
+        reason: null,
+      };
+    }
+
+    // Vehicle exists but no active reservation — allow exit
+    return { exit_allowed: true, paid: true, spot_code: null, reason: null };
+  },
 };
