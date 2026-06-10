@@ -77,6 +77,7 @@ latest_status_time: float = 0.0
 
 status_condition = threading.Condition()
 process_lock = threading.Lock()
+display_lock = threading.Lock()   # protects all SPI/display writes across threads
 
 mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 buzzer = Buzzer(GPIO_BUZZER)
@@ -97,12 +98,13 @@ def update_display(locuri: int) -> None:
     Updates the display with the number of free parking spots.
     Uses your existing lcd_test.py display functions.
     """
-    try:
-        frame = display.build_frame(locuri)
-        display.send_image(frame)
-        print(f"[DISPLAY] Locuri ramase: {locuri}")
-    except Exception as e:
-        print(f"[DISPLAY] Eroare update_display: {e}")
+    with display_lock:
+        try:
+            frame = display.build_frame(locuri)
+            display.send_image(frame)
+            print(f"[DISPLAY] Locuri ramase: {locuri}")
+        except Exception as e:
+            print(f"[DISPLAY] Eroare update_display: {e}")
 
 
 def display_message(message: str) -> None:
@@ -114,18 +116,19 @@ def display_message(message: str) -> None:
     """
     print(f"[DISPLAY MESSAGE] {message}")
 
-    try:
-        if hasattr(display, "build_text_frame"):
-            frame = display.build_text_frame(message)
-            display.send_image(frame)
-        elif hasattr(display, "show_message"):
-            display.show_message(message)
-        else:
-            # Fallback: no text rendering function available in lcd_test.py
-            # The message is still printed in terminal.
-            pass
-    except Exception as e:
-        print(f"[DISPLAY] Eroare display_message: {e}")
+    with display_lock:
+        try:
+            if hasattr(display, "build_text_frame"):
+                frame = display.build_text_frame(message)
+                display.send_image(frame)
+            elif hasattr(display, "show_message"):
+                display.show_message(message)
+            else:
+                # Fallback: no text rendering function available in lcd_test.py
+                # The message is still printed in terminal.
+                pass
+        except Exception as e:
+            print(f"[DISPLAY] Eroare display_message: {e}")
 
 
 def display_error(message: str) -> None:
@@ -134,16 +137,18 @@ def display_error(message: str) -> None:
     """
     print(f"[DISPLAY ERROR] {message}")
 
-    try:
-        if hasattr(display, "build_error_frame"):
-            frame = display.build_error_frame(message)
-            display.send_image(frame)
-        elif hasattr(display, "show_error"):
-            display.show_error(message)
-        else:
-            display_message(f"ERROR: {message}")
-    except Exception as e:
-        print(f"[DISPLAY] Eroare display_error: {e}")
+    with display_lock:
+        try:
+            if hasattr(display, "build_error_frame"):
+                frame = display.build_error_frame(message)
+                display.send_image(frame)
+            elif hasattr(display, "show_error"):
+                display.show_error(message)
+            else:
+                # display_message would deadlock here (it also acquires display_lock)
+                print(f"[DISPLAY] ERROR: {message}")
+        except Exception as e:
+            print(f"[DISPLAY] Eroare display_error: {e}")
 
 
 def is_valid_status(status: str) -> bool:

@@ -151,6 +151,13 @@ export const reservationsService = {
     const totalDurationHours = (newEndTime - new Date(reservation.startTime)) / 3600000;
     const newTotalCost = Number(reservation.parkingSpot.pricePerHour) * totalDurationHours;
 
-    return reservationsRepository.extend(id, newEndTime, newTotalCost);
+    await reservationsRepository.extend(id, newEndTime, newTotalCost);
+
+    await prisma.payment.updateMany({
+      where: { reservationId: id, status: "PENDING" },
+      data: { amount: newTotalCost },
+    });
+
+    return reservationsRepository.findById(id);
   },
 };

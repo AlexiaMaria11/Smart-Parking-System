@@ -86,7 +86,47 @@ export const anprService = {
         if (conflictSpot) {
           publishCommand("bariera_intrare", "OPEN");
 
+          const durationHours =
+            (new Date(reservation.endTime) - new Date(reservation.startTime)) /
+            3600000;
+          const totalCost = parseFloat(
+            (
+              (Math.ceil(durationHours * 10) / 10) *
+              Number(conflictSpot.pricePerHour)
+            ).toFixed(2),
+          );
+
+          await prisma.reservation.update({
+            where: { id: reservation.id },
+            data: { status: "CANCELLED" },
+          });
+          await prisma.payment.deleteMany({
+            where: { reservationId: reservation.id },
+          });
+
+          const conflictReservation = await prisma.reservation.create({
+            data: {
+              userId: reservation.userId,
+              vehicleId: reservation.vehicleId,
+              parkingSpotId: conflictSpot.id,
+              status: "ACTIVE",
+              startTime: reservation.startTime,
+              endTime: reservation.endTime,
+              totalCost,
+            },
+          });
+
           await Promise.all([
+            prisma.payment.create({
+              data: {
+                userId: reservation.userId,
+                vehicleId: reservation.vehicleId,
+                reservationId: conflictReservation.id,
+                parkingSpotId: conflictSpot.id,
+                amount: totalCost,
+                status: "PENDING",
+              },
+            }),
             prisma.parkingSpot.update({
               where: { id: conflictSpot.id },
               data: { isAvailable: false },
@@ -126,7 +166,20 @@ export const anprService = {
       }
     }
 
-    // ── Caz 2: walk-in — caută primul loc WALK_IN disponibil ─────────────
+    // ── Caz 2: walk-in — plăci neînregistrate blocate ────────────────────
+    if (!vehicle) {
+      publishCommand("bariera_intrare", "DENY");
+      await prisma.parkingEvent.create({
+        data: {
+          type: "DENIED",
+          description: `${plate} — plate not registered in system`,
+          licensePlate: plate,
+        },
+      });
+      return { allowed: false, reason: "no_registered_plate" };
+    }
+
+    // ── Caz 3: walk-in — caută primul loc WALK_IN disponibil ─────────────
     const freeWalkInSpot = await prisma.parkingSpot.findFirst({
       where: { spotType: "WALK_IN", isAvailable: true },
       orderBy: { code: "asc" },
@@ -146,9 +199,8 @@ export const anprService = {
 
     publishCommand("bariera_intrare", "OPEN");
 
-    // Dacă placa e înregistrată → creează doar o plată walk-in pendintă (fără rezervare)
-    if (vehicle) {
-      await prisma.payment.create({
+    await Promise.all([
+      prisma.payment.create({
         data: {
           userId: vehicle.ownerId,
           vehicleId: vehicle.id,
@@ -156,10 +208,7 @@ export const anprService = {
           amount: 0,
           status: "PENDING",
         },
-      });
-    }
-
-    await Promise.all([
+      }),
       prisma.parkingSpot.update({
         where: { id: freeWalkInSpot.id },
         data: { isAvailable: false },
@@ -188,14 +237,18 @@ export const anprService = {
       return { exit_allowed: false, paid: null, spot_code: null, reason: "no_plate" };
     }
 
-    // Check for unpaid active reservation
+    // Check for unpaid payment (reservation-based or walk-in with spot still occupied)
     const pendingPayment = await prisma.payment.findFirst({
       where: {
         userId: vehicle.ownerId,
+        vehicleId: vehicle.id,
         status: "PENDING",
-        reservation: { status: "ACTIVE" },
+        OR: [
+          { reservation: { status: "ACTIVE" } },
+          { reservationId: null, parkingSpot: { isAvailable: false } },
+        ],
       },
-      include: { reservation: { include: { parkingSpot: true } } },
+      include: { reservation: { include: { parkingSpot: true } }, parkingSpot: true },
     });
 
     if (pendingPayment) {
@@ -209,7 +262,7 @@ export const anprService = {
       return {
         exit_allowed: false,
         paid: false,
-        spot_code: pendingPayment.reservation.parkingSpot?.code ?? null,
+        spot_code: pendingPayment.reservation?.parkingSpot?.code ?? pendingPayment.parkingSpot?.code ?? null,
         reason: "unpaid",
       };
     }

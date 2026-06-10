@@ -88,7 +88,7 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
         data: { status: "COMPLETED", endTime: new Date() },
       });
 
-      await prisma.parkingSpot.update({
+      const freedSpot = await prisma.parkingSpot.update({
         where: { id: event.parkingSpotId },
         data: { isAvailable: true },
       });
@@ -103,7 +103,7 @@ export async function handleBarrierTrigger({ barrierId, payload, io }) {
       });
 
       io.emit("parking:spot:updated", {
-        code: event.parkingSpotId,
+        code: freedSpot.code,
         isAvailable: true,
       });
       await broadcastDisplayState();

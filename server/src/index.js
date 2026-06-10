@@ -4,6 +4,7 @@ import { createApp } from "./app.js";
 import { env } from "./config/env.js";
 import { registerParkingSocket } from "./sockets/parkingSocket.js";
 import { startMqttService } from "./services/mqttService.js";
+import { startNoShowJob } from "./jobs/noShowJob.js";
 
 const app = createApp();
 const server = http.createServer(app);
@@ -21,6 +22,8 @@ if (env.mqttEnabled) {
 } else {
   console.log("MQTT disabled by MQTT_ENABLED=false");
 }
+
+startNoShowJob();
 
 server.listen(env.port, () => {
   console.log(`Smart Parking API running on http://localhost:${env.port}`);

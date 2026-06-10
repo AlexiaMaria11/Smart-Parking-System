@@ -10,10 +10,9 @@ export function validateRegister(req, res, next) {
 }
 
 export function validateLogin(req, res, next) {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: "Email is required" });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
   }
-
   next();
 }
